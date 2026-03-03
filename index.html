@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ingilizce | B & H STUDIOS</title>
+    <title>WORD HUNT</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;800&display=swap" rel="stylesheet">
     
@@ -24,7 +24,6 @@
         input, textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.6); color: #fff; font-size: 14px; margin-bottom: 10px; text-align: center; outline: none; transition: 0.3s; }
         .btn { width: 100%; padding: 15px; border-radius: 15px; border: none; font-size: 14px; font-weight: 900; cursor: pointer; background: var(--green); color: #000; text-transform: uppercase; margin-bottom: 10px; transition: 0.3s; }
         
-        /* RÜTBE RENKLERİ VE PARLAMA EFEKTLERİ */
         .rank-DEVELOPER { color: var(--red); text-shadow: 0 0 15px var(--red); font-weight: 900; animation: glow 1s infinite alternate; }
         .rank-ELİT { color: #ff0000; text-shadow: 0 0 12px #ff0000; font-weight: 900; animation: glow 1.5s infinite alternate; }
         .rank-ELMAS { color: var(--diamond); text-shadow: 0 0 10px var(--diamond); font-weight: 800; animation: glow 2s infinite alternate; }
@@ -62,11 +61,11 @@
 <div id="scr-login" style="display: contents;">
     <div class="big-card" id="login-card">
         <div id="studio-header">
-            <div style="font-family:'Orbitron'; font-weight:900; font-size:26px; letter-spacing: 2px;">B & H STUDIOS</div>
+            <div style="font-family:'Orbitron'; font-weight:900; font-size:32px; letter-spacing: 2px; color: var(--green);">WORD HUNT</div>
         </div>
 
         <div id="login-form">
-            <div class="box-title" id="login-status" style="font-size:14px;">SİSTEME GİRİŞ YAP</div>
+            <div class="box-title" id="login-status" style="font-size:14px;">WORD HUNT GİRİŞ</div>
             <input type="text" id="username" placeholder="KULLANICI ADI">
             <input type="password" id="password" placeholder="ŞİFRE">
             <button class="btn" id="auth-btn" onclick="sys.auth()">GİRİŞ YAP</button>
@@ -98,58 +97,6 @@
         </div>
     </div>
 </div>
-
-<div id="scr-game" class="overlay">
-    <div class="big-card" style="border-color: var(--green);">
-        <div id="turn-notice" style="font-size: 14px; color: var(--orange); font-weight: 800; margin-bottom: 10px; display: none;">SIRA: <span id="current-player-turn"></span></div>
-        <div style="display:flex; justify-content: space-between; font-size: 14px; margin-bottom: 15px;">
-            <span id="display-name" style="color: var(--green); font-weight: 900;">...</span>
-            <span>SKOR: <b id="score">0</b></span>
-        </div>
-        <div id="word" style="font-size: 38px; font-weight: 900; margin: 25px 0; letter-spacing: 2px;">...</div>
-        <input type="text" id="answer" placeholder="Cevabı buraya yaz..." autocomplete="off">
-        <div style="font-size: 14px;">SÜRE: <span id="timer" style="color:var(--red); font-weight: 900;">30</span>s</div>
-    </div>
-</div>
-
-<div id="leaderboard-modal" class="overlay" onclick="this.style.display='none'">
-    <div class="big-card" style="border-color: var(--blue);" onclick="event.stopPropagation()">
-        <div class="box-title" style="color:var(--blue);">🏆 DÜNYA SIRALAMASI</div>
-        <div id="leader-list" class="admin-list">...</div>
-        <button class="btn" style="background:#333; color:#fff; margin-top:15px;" onclick="sys.backToMenu()">MENÜYE DÖN</button>
-    </div>
-</div>
-
-<div id="suggest-modal" class="overlay" onclick="this.style.display='none'">
-    <div class="big-card" style="border-color: var(--gold);" onclick="event.stopPropagation()">
-        <div class="box-title" style="color:var(--gold);">GLOBAL ÖNERİLER</div>
-        <textarea id="suggest-text" rows="2" placeholder="Mesajınızı yazın..."></textarea>
-        <button class="btn" style="background:var(--gold); padding: 10px;" onclick="sys.sendSuggest()">GÖNDER</button>
-        <div id="public-suggest-list" class="admin-list"></div>
-    </div>
-</div>
-
-<div id="profile-modal" class="overlay" onclick="this.style.display='none'">
-    <div class="big-card" style="border-color: var(--blue);" onclick="event.stopPropagation()">
-        <div class="box-title" style="color:var(--blue);">PROFİL</div>
-        <div style="text-align:left; margin-bottom:15px;">
-            <p>OYUNCU: <b id="prof-name"></b> <span id="prof-dev"></span></p>
-            <p>REKOR: <b id="prof-record">0</b></p>
-            <p>RÜTBE: <b id="prof-rank"></b></p>
-        </div>
-        <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:15px; font-size:11px;">
-            <div style="color:var(--gold); font-weight:900; margin-bottom:5px;">RÜTBE GEREKSİNİMLERİ</div>
-            <div>🔴 <span class="rank-ELİT">ELİT</span>: 20000+</div>
-            <div>🔵 <span class="rank-ELMAS">ELMAS</span>: 10000 - 20000</div>
-            <div>🟡 <span class="rank-ALTIN">ALTIN</span>: 5000 - 10000</div>
-            <div>⚪ <span class="rank-DEMİR">DEMİR</span>: 2000 - 5000</div>
-            <div>🟤 <span class="rank-BRONZ">BRONZ</span>: 0 - 2000</div>
-        </div>
-        <button class="btn" style="margin-top:20px;" onclick="document.getElementById('profile-modal').style.display='none'">KAPAT</button>
-    </div>
-</div>
-
-<div id="jumpscare"><div class="ghost-img">👻</div></div>
 
 <script>
     const firebaseConfig = {
@@ -375,16 +322,14 @@
         if(e.key === 'Enter' && sys.active) {
             let userAns = document.getElementById('answer').value.toLowerCase().trim();
             if(userAns === sys.cur.en.toLowerCase()) {
-                // DOĞRU CEVAP
                 sys.score += 50; 
-                sys.time += 3; // +3 Saniye bonus
+                sys.time += 3; 
                 document.getElementById('score').innerText = sys.score; 
-                document.getElementById('snd-success').play(); // Başarı sesi
+                document.getElementById('snd-success').play(); 
                 confetti({ particleCount: 40, origin: { y: 0.8 } }); 
                 sys.next();
             } else {
-                // YANLIŞ CEVAP
-                document.getElementById('snd-error').play(); // Hata sesi
+                document.getElementById('snd-error').play(); 
                 const js = document.getElementById('jumpscare');
                 js.style.display='flex';
                 setTimeout(() => js.classList.add('active'), 10);
@@ -397,6 +342,58 @@
         }
     });
 </script>
+
+<div id="scr-game" class="overlay">
+    <div class="big-card" style="border-color: var(--green);">
+        <div id="turn-notice" style="font-size: 14px; color: var(--orange); font-weight: 800; margin-bottom: 10px; display: none;">SIRA: <span id="current-player-turn"></span></div>
+        <div style="display:flex; justify-content: space-between; font-size: 14px; margin-bottom: 15px;">
+            <span id="display-name" style="color: var(--green); font-weight: 900;">...</span>
+            <span>SKOR: <b id="score">0</b></span>
+        </div>
+        <div id="word" style="font-size: 38px; font-weight: 900; margin: 25px 0; letter-spacing: 2px;">...</div>
+        <input type="text" id="answer" placeholder="Cevabı buraya yaz..." autocomplete="off">
+        <div style="font-size: 14px;">SÜRE: <span id="timer" style="color:var(--red); font-weight: 900;">30</span>s</div>
+    </div>
+</div>
+
+<div id="leaderboard-modal" class="overlay" onclick="this.style.display='none'">
+    <div class="big-card" style="border-color: var(--blue);" onclick="event.stopPropagation()">
+        <div class="box-title" style="color:var(--blue);">🏆 DÜNYA SIRALAMASI</div>
+        <div id="leader-list" class="admin-list">...</div>
+        <button class="btn" style="background:#333; color:#fff; margin-top:15px;" onclick="sys.backToMenu()">MENÜYE DÖN</button>
+    </div>
+</div>
+
+<div id="suggest-modal" class="overlay" onclick="this.style.display='none'">
+    <div class="big-card" style="border-color: var(--gold);" onclick="event.stopPropagation()">
+        <div class="box-title" style="color:var(--gold);">GLOBAL ÖNERİLER</div>
+        <textarea id="suggest-text" rows="2" placeholder="Mesajınızı yazın..."></textarea>
+        <button class="btn" style="background:var(--gold); padding: 10px;" onclick="sys.sendSuggest()">GÖNDER</button>
+        <div id="public-suggest-list" class="admin-list"></div>
+    </div>
+</div>
+
+<div id="profile-modal" class="overlay" onclick="this.style.display='none'">
+    <div class="big-card" style="border-color: var(--blue);" onclick="event.stopPropagation()">
+        <div class="box-title" style="color:var(--blue);">PROFİL</div>
+        <div style="text-align:left; margin-bottom:15px;">
+            <p>OYUNCU: <b id="prof-name"></b> <span id="prof-dev"></span></p>
+            <p>REKOR: <b id="prof-record">0</b></p>
+            <p>RÜTBE: <b id="prof-rank"></b></p>
+        </div>
+        <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:15px; font-size:11px;">
+            <div style="color:var(--gold); font-weight:900; margin-bottom:5px;">RÜTBE GEREKSİNİMLERİ</div>
+            <div>🔴 <span class="rank-ELİT">ELİT</span>: 20000+</div>
+            <div>🔵 <span class="rank-ELMAS">ELMAS</span>: 10000 - 20000</div>
+            <div>🟡 <span class="rank-ALTIN">ALTIN</span>: 5000 - 10000</div>
+            <div>⚪ <span class="rank-DEMİR">DEMİR</span>: 2000 - 5000</div>
+            <div>🟤 <span class="rank-BRONZ">BRONZ</span>: 0 - 2000</div>
+        </div>
+        <button class="btn" style="margin-top:20px;" onclick="document.getElementById('profile-modal').style.display='none'">KAPAT</button>
+    </div>
+</div>
+
+<div id="jumpscare"><div class="ghost-img">👻</div></div>
 
 <div id="scr-end" class="overlay">
     <div class="big-card" style="border-color: var(--gold);">
