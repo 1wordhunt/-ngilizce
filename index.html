@@ -105,7 +105,7 @@
         <div id="word" style="font-size: 38px; font-weight: 900; margin: 25px 0; letter-spacing: 2px;">...</div>
         <input type="text" id="answer" placeholder="Cevabı buraya yaz..." autocomplete="off">
         
-        <button class="btn btn-enter" onclick="sys.checkAnswer()">CEVABI KONTROL ET</button>
+        <button class="btn btn-enter" onclick="sys.checkAnswer()">ENTER</button>
         
         <div style="font-size: 14px; margin-top:10px;">SÜRE: <span id="timer" style="color:var(--red); font-weight: 900;">30</span>s</div>
     </div>
@@ -124,7 +124,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // HOCANIN İSTEDİĞİ YENİ KELİME LİSTESİ (BÖLÜŞTÜRÜLDÜ)
+    //
     const POOLS = {
         easy: [
             {tr:"Zaman",en:"time"},{tr:"Yıl",en:"year"},{tr:"İnsanlar",en:"people"},{tr:"Yol",en:"way"},{tr:"Gün",en:"day"},
@@ -386,12 +386,26 @@
 
 <div id="profile-modal" class="overlay" onclick="this.style.display='none'">
     <div class="big-card" style="border-color: var(--blue);" onclick="event.stopPropagation()">
-        <div class="box-title" style="color:var(--blue);">PROFİL</div>
+        <div class="box-title" style="color:var(--blue);">👤 PROFİLİM</div>
+        
         <div style="text-align:left; margin-bottom:15px;">
-            <p>OYUNCU: <b id="prof-name"></b> <span id="prof-dev"></span></p>
             <p>REKOR: <b id="prof-record">0</b></p>
-            <p>RÜTBE: <b id="prof-rank"></b></p>
+            <p>RÜTBE: <b id="prof-rank"></b> <span id="prof-dev"></span></p>
         </div>
+
+        <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:15px; text-align: left;">
+            <div style="color:var(--gold); font-weight:900; margin-bottom:5px;">RÜTBE GEREKSİNİMLERİ:</div>
+            
+            <div>🔴 <span class="rank-ELİT">ELİT</span>: 20000+</div>
+            <div>🔵 <span class="rank-ELMAS">ELMAS</span>: 1000 - 20000</div>
+            <div>🟡 <span class="rank-ALTIN">ALTIN</span>: 5000 - 1000</div>
+            <div>⚪ <span class="rank-DEMİR">DEMİR</span>: 2000 - 5000</div>
+            <div>🟤 <span class="rank-BRONZ">BRONZ</span>: 0 - 2000</div>
+        </div>
+
+        <button class="btn" style="margin-top:20px;" onclick="document.getElementById('profile-modal').style.display='none'">KAPAT</button>
+    </div>
+</div>
         <button class="btn" style="margin-top:20px;" onclick="document.getElementById('profile-modal').style.display='none'">KAPAT</button>
     </div>
 </div>
