@@ -221,7 +221,7 @@
             if(corrects.includes(userAns)) {
                 sys.score += 50; sys.time += 3; document.getElementById('score').innerText = sys.score;
                 document.getElementById('snd-success').play(); confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
-                if(!sys.learned.includes(sys.cur.tr)) { sys.learned.push(sys.cur.tr); db.ref('users/' + (sys.isDuel ? sys.p1N : sys.name)).update({ learned: sys.learned }); }
+                if(!sys.learned.includes(sys.cur.tr)) { sys.learned.push(sys.cur.tr); db.ref('users/' + (sys.isDuel ? sys.name : sys.name)).update({ learned: sys.learned }); }
                 sys.next();
             } else {
                 sys.hearts--; sys.updateHearts(); document.getElementById('snd-error').play();
@@ -232,12 +232,15 @@
         },
 
         finish: () => {
+            sys.active = false;
             document.getElementById('scr-game').style.display = 'none';
             if(!sys.isDuel) {
                 db.ref('users/' + sys.name).once('value', snap => {
-                    let oldR = snap.val().record || 0;
-                    if(sys.score > oldR) db.ref('users/' + sys.name).update({ record: sys.score });
-                    sys.showModal(`<div class="box-title" style="color:var(--red)">Oyun Bitti!</div><h1 style="font-size:50px">${sys.score}</h1><p>SKORUN KAYDEDİLDİ</p>`, () => sys.backToMenu());
+                    let oldR = snap.val()?.record || 0;
+                    if(sys.score > oldR) {
+                        db.ref('users/' + sys.name).update({ record: sys.score });
+                    }
+                    sys.showModal(`<div class="box-title" style="color:var(--red)">Oyun Bitti!</div><h1 style="font-size:50px">${sys.score}</h1><p>SKORUN SIRALAMAYA İŞLENDİ</p>`, () => sys.backToMenu());
                 });
             } else {
                 if(sys.duelTurn === 1) { 
@@ -263,10 +266,14 @@
         },
 
         showLeaderboard: () => {
-            db.ref('users').orderByChild('record').limitToLast(10).once('value', snap => {
+            db.ref('users').orderByChild('record').once('value', snap => {
                 let html = `<div class="box-title">🏆 DÜNYA SIRALAMASI</div><div class="list-container">`;
-                let p = []; snap.forEach(u => p.push({n: u.key, s: u.val().record}));
-                p.reverse().forEach((x, i) => {
+                let users = [];
+                snap.forEach(u => {
+                    users.push({ n: u.key, s: u.val().record || 0 });
+                });
+                users.sort((a, b) => b.s - a.s);
+                users.slice(0, 20).forEach((x, i) => {
                     let r = sys.getRank(x.s, x.n);
                     html += `<div class="list-item"><span>#${i+1} ${x.n.toUpperCase()}</span><span class="rank-${r}">${r} (${x.s})</span></div>`;
                 });
@@ -297,7 +304,7 @@
             const msg = document.getElementById('s-msg').value.trim();
             if(!msg) return;
             db.ref('users/' + sys.name).once('value', snap => {
-                let r = sys.getRank(snap.val().record || 0, sys.name);
+                let r = sys.getRank(snap.val()?.record || 0, sys.name);
                 db.ref('suggestions').push({ user: sys.name.toUpperCase(), rank: r, msg: msg });
                 document.getElementById('s-msg').value = "";
             });
@@ -335,6 +342,7 @@
             document.getElementById('duel-setup').style.display='none'; 
             document.getElementById('main-menu').style.display='block'; 
             sys.isDuel = false; 
+            sys.duelTurn = 1;
         }
     };
 
