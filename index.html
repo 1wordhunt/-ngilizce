@@ -20,37 +20,30 @@
         .big-card { background: rgba(255, 255, 255, 0.07); border: 2px solid rgba(255, 255, 255, 0.15); border-radius: 25px; width: 92%; max-width: 400px; padding: 25px; text-align: center; backdrop-filter: blur(25px); box-shadow: 0 15px 50px rgba(0,0,0,0.8); position: relative; }
         .box-title { font-family: 'Orbitron'; font-weight: 900; font-size: 20px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
         
-        input, textarea { width: 100%; padding: 14px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: #fff; font-size: 14px; margin-bottom: 12px; text-align: center; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--green); box-shadow: 0 0 15px rgba(46, 204, 113, 0.3); }
-
-        .btn { width: 100%; padding: 16px; border-radius: 18px; border: none; font-size: 14px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-bottom: 12px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn:active { transform: scale(0.95); }
+        input, textarea { width: 100%; padding: 14px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: #fff; font-size: 14px; margin-bottom: 12px; text-align: center; outline: none; }
         
-        /* Rütbe Renkleri */
-        .rank-DEVELOPER { color: var(--red); text-shadow: 0 0 15px var(--red); }
-        .rank-ELİT { color: #ff0000; text-shadow: 0 0 10px #ff0000; }
+        .btn { width: 100%; padding: 16px; border-radius: 18px; border: none; font-size: 14px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-bottom: 12px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn:active { transform: scale(0.96); }
+        
+        .rank-DEVELOPER { color: var(--red); text-shadow: 0 0 15px var(--red); font-weight: 900; }
+        .rank-ELİT { color: #ff4757; text-shadow: 0 0 10px #ff4757; }
         .rank-ELMAS { color: var(--diamond); text-shadow: 0 0 10px var(--diamond); }
         .rank-ALTIN { color: var(--gold); text-shadow: 0 0 8px var(--gold); }
         .rank-DEMİR { color: var(--iron); }
         .rank-BRONZ { color: var(--bronze); }
 
-        .overlay { position: fixed; inset: 0; z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .hearts { font-size: 28px; margin-bottom: 15px; filter: drop-shadow(0 0 10px var(--red)); }
+        .overlay { position: fixed; inset: 0; z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); }
+        .hearts { font-size: 28px; margin-bottom: 15px; }
         .word-tab { display: inline-block; padding: 10px 15px; margin: 5px; border-radius: 12px; background: rgba(255,255,255,0.05); font-weight: 600; border: 1px solid rgba(255,255,255,0.1); }
         .word-learned { border-color: var(--green); color: var(--green); background: rgba(46, 204, 113, 0.1); }
         
-        .list-container { text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 20px; margin-top: 10px; max-height: 250px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05); }
+        .list-container { text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 20px; max-height: 250px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05); }
         .list-item { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-        
+
         #jumpscare { position: fixed; inset: 0; z-index: 8000; display: none; align-items: center; justify-content: center; pointer-events: none; }
         .ghost-img { font-size: 180px; opacity: 0; transition: 0.5s; transform: scale(0.1); }
         #jumpscare.active { display: flex; background: rgba(255, 0, 0, 0.3); }
         #jumpscare.active .ghost-img { opacity: 1; transform: scale(1.2) rotate(10deg); }
-
-        .result-card { background: #111; border: 3px solid var(--gold); padding: 30px; border-radius: 30px; animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
-        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -66,7 +59,7 @@
 
 <div id="scr-login" style="display: contents;">
     <div class="big-card">
-        <div style="font-family:'Orbitron'; font-weight:900; font-size:36px; color: var(--green); margin-bottom:25px; text-shadow: 0 0 20px rgba(46,204,113,0.5);">WORD HUNT</div>
+        <div style="font-family:'Orbitron'; font-weight:900; font-size:36px; color: var(--green); margin-bottom:25px;">WORD HUNT</div>
         <div id="login-form">
             <input type="text" id="username" placeholder="KULLANICI ADI">
             <input type="password" id="password" placeholder="ŞİFRE">
@@ -104,7 +97,7 @@
             <span>SKOR: <b id="score" style="color:var(--gold)">0</b></span>
         </div>
         <div id="duel-info" style="color:var(--orange); font-weight:900; margin-bottom:10px; display:none;">SIRA: <span id="cur-p"></span></div>
-        <div id="word" style="font-size: 42px; font-weight: 900; margin: 30px 0; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3);">...</div>
+        <div id="word" style="font-size: 42px; font-weight: 900; margin: 30px 0;">...</div>
         <input type="text" id="answer" placeholder="İngilizcesini yaz..." autocomplete="off">
         <button class="btn" onclick="sys.checkAnswer()" style="background:var(--blue); color:white">KONTROL ET</button>
         <div style="font-size: 16px;">SÜRE: <span id="timer" style="color:var(--red); font-weight: 900;">30</span></div>
@@ -121,7 +114,6 @@
 <div id="jumpscare"><div class="ghost-img">👻</div></div>
 
 <script>
-    // Firebase ve Oyun Mantığı (Önceki verilere sadık kalınarak)
     const firebaseConfig = {
       apiKey: "AIzaSyBDQARwl0Dtelk1GBEC3HEyuPWNTPPc4Ks",
       authDomain: "bh-studios.firebaseapp.com",
@@ -135,9 +127,35 @@
     const db = firebase.database();
 
     const POOLS = {
-        easy: [{tr:"Zaman",en:"time"},{tr:"Yıl",en:"year"},{tr:"İnsanlar",en:"people"},{tr:"Yol",en:"way/road/path"},{tr:"Parça",en:"part/piece"}],
-        medium: [{tr:"Durum",en:"state/status/situation"},{tr:"Ülke",en:"country"},{tr:"Sistem",en:"system"}],
-        hard: [{tr:"Önemli",en:"important/significant"},{tr:"Gerçekten",en:"really/actually/truly"}]
+        easy: [
+            {tr:"Zaman",en:"time"}, {tr:"Yıl",en:"year"}, {tr:"İnsanlar",en:"people"}, {tr:"Yol",en:"way/road/path"}, {tr:"Gün",en:"day"},
+            {tr:"Adam",en:"man"}, {tr:"Şey",en:"thing"}, {tr:"Kadın",en:"woman"}, {tr:"Hayat",en:"life"}, {tr:"Çocuk",en:"child/kid"},
+            {tr:"Dünya",en:"world"}, {tr:"Okul",en:"school"}, {tr:"Aile",en:"family"}, {tr:"Öğrenci",en:"student"}, {tr:"Grup",en:"group"},
+            {tr:"El",en:"hand"}, {tr:"Parça",en:"part/piece"}, {tr:"Yer",en:"place/location"}, {tr:"Hafta",en:"week"}, {tr:"Kelime",en:"word"},
+            {tr:"İş",en:"work/job"}, {tr:"Yapmak",en:"make/do"}, {tr:"Almak",en:"take/get/buy"}, {tr:"Vermek",en:"give"}, {tr:"Gelmek",en:"come"},
+            {tr:"Bakmak",en:"look"}, {tr:"İstemek",en:"want"}, {tr:"Bulmak",en:"find"}, {tr:"Söylemek",en:"tell/say"}, {tr:"Sormak",en:"ask"},
+            {tr:"İyi",en:"good/well"}, {tr:"Yeni",en:"new"}, {tr:"İlk",en:"first"}, {tr:"Son",en:"last/end"}, {tr:"Uzun",en:"long"}
+        ],
+        medium: [
+            {tr:"Durum",en:"state/status/situation"}, {tr:"Ülke",en:"country"}, {tr:"Problem",en:"problem/issue"}, {tr:"Vaka",en:"case/event"}, 
+            {tr:"Şirket",en:"company"}, {tr:"Sistem",en:"system"}, {tr:"Kullanmak",en:"use/utilize"}, {tr:"Denemek",en:"try/attempt"}, 
+            {tr:"İhtiyaç",en:"need"}, {tr:"Hissetmek",en:"feel"}, {tr:"Ayrılmak",en:"leave/separate"}, {tr:"Aramak",en:"call/search"}, 
+            {tr:"Tutmak",en:"keep/hold"}, {tr:"Başlamak",en:"start/begin"}, {tr:"Görünmek",en:"seem/appear"}, {tr:"Yardım",en:"help/aid"}, 
+            {tr:"Konuşmak",en:"talk/speak"}, {tr:"Dönmek",en:"turn/return"}, {tr:"Göstermek",en:"show/display"}, {tr:"Büyük",en:"great/big/large"}, 
+            {tr:"Kendi",en:"own/self"}, {tr:"Diğer",en:"other/another"}, {tr:"Eski",en:"old/ancient"}, {tr:"Doğru",en:"right/correct/true"}, 
+            {tr:"Yüksek",en:"high/tall"}, {tr:"Farklı",en:"different"}, {tr:"Küçük",en:"small/little"}, {tr:"Büyük (Geniş)",en:"large"}, 
+            {tr:"Sonraki",en:"next"}, {tr:"Erken",en:"early"}, {tr:"Genç",en:"young"}, {tr:"Kötü",en:"bad/evil"}, {tr:"Aynı",en:"same"},
+            {tr:"Çok",en:"very/much/many"}, {tr:"Sık Sık",en:"often/frequently"}, {tr:"Birlikte",en:"together"}
+        ],
+        hard: [
+            {tr:"Olmak",en:"become/happen"}, {tr:"Önemli",en:"important/significant"}, {tr:"Az",en:"few/little/less"}, {tr:"Kamu",en:"public"}, 
+            {tr:"Yapabilmek",en:"able/can"}, {tr:"Gerçekten",en:"really/actually/truly"}, {tr:"Hızlıca",en:"quickly/fast"}, {tr:"Yavaşça",en:"slowly"}, 
+            {tr:"Her zaman",en:"always/forever"}, {tr:"Bazen",en:"sometimes/occasionally"}, {tr:"Genellikle",en:"usually/generally"}, 
+            {tr:"Zaten",en:"already"}, {tr:"Neredeyse",en:"almost/nearly"}, {tr:"Özellikle",en:"especially/particularly"}, 
+            {tr:"Muhtemelen",en:"probably/maybe"}, {tr:"Sonunda",en:"finally/eventually"}, {tr:"Kolayca",en:"easily"}, 
+            {tr:"Son zamanlarda",en:"recently/lately"}, {tr:"Hemen",en:"immediately/now"}, {tr:"Şu anda",en:"currently/now/presently"}, 
+            {tr:"Açıkça",en:"clearly/obviously"}, {tr:"Basitçe",en:"simply"}, {tr:"Tam olarak",en:"exactly/precisely"}, {tr:"Güçlüce",en:"strongly"}
+        ]
     };
 
     const sys = {
