@@ -32,11 +32,12 @@
 
         .overlay { position: fixed; inset: 0; z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); }
         .hearts { font-size: 24px; margin-bottom: 10px; color: var(--red); }
-        .word-tab { display: inline-block; padding: 5px 10px; margin: 2px; border-radius: 5px; background: rgba(255,255,255,0.1); font-size: 12px; }
-        .word-learned { border: 1px solid var(--green); color: var(--green); }
-        .tab-btn { padding: 10px; flex: 1; background: #333; border: none; color: white; cursor: pointer; font-weight: bold; }
-        .tab-btn.active { background: var(--blue); }
+        .word-tab { display: inline-block; padding: 8px 12px; margin: 4px; border-radius: 8px; background: rgba(255,255,255,0.05); font-size: 13px; border: 1px solid rgba(255,255,255,0.1); }
+        .word-learned { border: 1px solid var(--green); color: var(--green); background: rgba(46, 204, 113, 0.1); }
         
+        .admin-list { text-align: left; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px; margin-top: 10px; max-height: 200px; overflow-y: auto; font-size: 12px; border: 1px solid rgba(255,255,255,0.1); }
+        .admin-item { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
         #jumpscare { position: fixed; inset: 0; z-index: 8000; display: none; align-items: center; justify-content: center; pointer-events: none; }
         .ghost-img { font-size: 150px; opacity: 0; transition: 0.7s; transform: scale(0.1); }
         #jumpscare.active { display: flex; background: rgba(255, 0, 0, 0.4); }
@@ -50,8 +51,9 @@
 <audio id="snd-error" src="https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3"></audio>
 
 <div id="top-bar" style="position: fixed; top: 20px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; z-index: 5000;">
-    <div id="profile-trigger" class="btn" style="width: auto; padding: 10px 15px; display:none; background: rgba(255,255,255,0.1); color:white;" onclick="sys.showProfile()">👤 PROFİLİM</div>
+    <div id="profile-trigger" class="btn" style="width: auto; padding: 10px 15px; display:none; background: rgba(255,255,255,0.1); color:white;" onclick="sys.showProfile()">👤 PROFİL</div>
     <div id="diary-trigger" class="btn" style="width: auto; padding: 10px 15px; display:none; background: var(--blue); color:white;" onclick="sys.showDiary()">📖 GÜNLÜK</div>
+    <div id="suggest-trigger" class="btn" style="width: auto; padding: 10px 15px; display:none; background: var(--gold); color:black;" onclick="sys.showSuggest()">💡 ÖNERİLER</div>
 </div>
 
 <div id="scr-login" style="display: contents;">
@@ -71,9 +73,16 @@
         </div>
         <div id="difficulty-selection" style="display: none;">
             <div class="box-title">ZORLUK SEÇ</div>
-            <button class="btn" style="background:var(--green)" onclick="sys.login('easy')">KOLAY</button>
+            <button class="btn" style="background:var(--green); color:black;" onclick="sys.login('easy')">KOLAY</button>
             <button class="btn" style="background:var(--orange); color:white" onclick="sys.login('medium')">ORTA</button>
             <button class="btn" style="background:var(--red); color:white" onclick="sys.login('hard')">ZOR</button>
+            <button class="btn" style="background:#333; color:#fff" onclick="sys.backToMenu()">GERİ</button>
+        </div>
+        <div id="1vs1-inputs" style="display: none;">
+            <div class="box-title" style="color:var(--orange)">DÜELLO</div>
+            <input type="text" id="p1-name" placeholder="1. Oyuncu">
+            <input type="text" id="p2-name" placeholder="2. Oyuncu">
+            <button class="btn" onclick="sys.startDuelPrep()">BAŞLAT</button>
             <button class="btn" style="background:#333; color:#fff" onclick="sys.backToMenu()">GERİ</button>
         </div>
     </div>
@@ -86,34 +95,39 @@
             <span id="display-name" style="color: var(--green); font-weight: 900;">...</span>
             <span>SKOR: <b id="score">0</b></span>
         </div>
+        <div id="turn-notice" style="color:var(--orange); font-size:12px; margin-bottom:5px; display:none;">SIRA: <span id="current-player-turn"></span></div>
         <div id="word" style="font-size: 38px; font-weight: 900; margin: 25px 0;">...</div>
         <input type="text" id="answer" placeholder="Cevabı yaz..." autocomplete="off">
         <button class="btn" onclick="sys.checkAnswer()" style="background:var(--blue); color:white">KONTROL ET</button>
-        <div style="font-size: 14px; margin-top:10px;">SÜRE: <span id="timer" style="color:var(--red); font-weight: 900;">30</span>s</div>
+        <div style="font-size: 14px;">SÜRE: <span id="timer" style="color:var(--red); font-weight: 900;">30</span>s</div>
     </div>
 </div>
 
 <div id="diary-modal" class="overlay" onclick="this.style.display='none'">
-    <div class="big-card" style="border-color: var(--blue); max-width: 450px;" onclick="event.stopPropagation()">
+    <div class="big-card" style="border-color: var(--blue);" onclick="event.stopPropagation()">
         <div class="box-title" style="color:var(--blue);">📖 KELİME GÜNLÜĞÜ</div>
-        <div style="display:flex; margin-bottom: 15px;">
-            <button class="tab-btn active" onclick="sys.filterDiary('easy', this)">KOLAY</button>
-            <button class="tab-btn" onclick="sys.filterDiary('medium', this)">ORTA</button>
-            <button class="tab-btn" onclick="sys.filterDiary('hard', this)">ZOR</button>
+        <div style="display:flex; gap:5px; margin-bottom:15px;">
+            <button class="btn" style="background:var(--green); font-size:10px; padding:10px;" onclick="sys.filterDiary('easy')">KOLAY</button>
+            <button class="btn" style="background:var(--orange); font-size:10px; padding:10px; color:white;" onclick="sys.filterDiary('medium')">ORTA</button>
+            <button class="btn" style="background:var(--red); font-size:10px; padding:10px; color:white;" onclick="sys.filterDiary('hard')">ZOR</button>
         </div>
-        <div id="diary-content" style="text-align: left; max-height: 300px; overflow-y: auto;"></div>
+        <div id="diary-content" style="text-align: left; max-height: 250px; overflow-y: auto;"></div>
     </div>
 </div>
 
-<div id="profile-modal" class="overlay" onclick="this.style.display='none'">
+<div id="leaderboard-modal" class="overlay" onclick="this.style.display='none'">
     <div class="big-card" style="border-color: var(--blue);" onclick="event.stopPropagation()">
-        <div class="box-title" style="color:var(--blue);">👤 PROFİLİM</div>
-        <div style="text-align:left; margin-bottom:15px;">
-            <p>OYUNCU: <b id="prof-name"></b> <span id="prof-dev"></span></p>
-            <p>REKOR: <b id="prof-record">0</b></p>
-            <p>RÜTBE: <b id="prof-rank"></b></p>
-        </div>
-        <button class="btn" onclick="document.getElementById('profile-modal').style.display='none'">KAPAT</button>
+        <div class="box-title" style="color:var(--blue);">🏆 DÜNYA SIRALAMASI</div>
+        <div id="leader-list" class="admin-list"></div>
+    </div>
+</div>
+
+<div id="suggest-modal" class="overlay" onclick="this.style.display='none'">
+    <div class="big-card" style="border-color: var(--gold);" onclick="event.stopPropagation()">
+        <div class="box-title" style="color:var(--gold);">GLOBAL MESAJLAR</div>
+        <textarea id="suggest-text" placeholder="Mesaj yaz..."></textarea>
+        <button class="btn" style="background:var(--gold);" onclick="sys.sendSuggest()">GÖNDER</button>
+        <div id="public-suggest-list" class="admin-list"></div>
     </div>
 </div>
 
@@ -132,44 +146,19 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // ÇOKLU ANLAMLI KELİME HAVUZU
     const POOLS = {
-        easy: [
-            {tr:"Zaman",en:"time"},{tr:"Yıl",en:"year"},{tr:"İnsanlar",en:"people"},{tr:"Yol",en:"way/road/path"},{tr:"Gün",en:"day"},
-            {tr:"Adam",en:"man"},{tr:"Şey",en:"thing"},{tr:"Kadın",en:"woman"},{tr:"Hayat",en:"life"},{tr:"Çocuk",en:"child/kid"},
-            {tr:"Dünya",en:"world"},{tr:"Okul",en:"school"},{tr:"Aile",en:"family"},{tr:"Öğrenci",en:"student"},{tr:"Grup",en:"group"},
-            {tr:"El",en:"hand"},{tr:"Parça",en:"part/piece"},{tr:"Yer",en:"place/location"},{tr:"Hafta",en:"week"},{tr:"Kelime",en:"word"},
-            {tr:"İş",en:"work/job"},{tr:"Yapmak",en:"make/do"},{tr:"Almak",en:"take/get/buy"},{tr:"Vermek",en:"give"},{tr:"Gelmek",en:"come"},
-            {tr:"Bakmak",en:"look"},{tr:"İstemek",en:"want"},{tr:"Bulmak",en:"find"},{tr:"Söylemek",en:"tell/say"},{tr:"Sormak",en:"ask"},
-            {tr:"İyi",en:"good/well"},{tr:"Yeni",en:"new"},{tr:"İlk",en:"first"},{tr:"Son",en:"last/end"},{tr:"Uzun",en:"long"}
-        ],
-        medium: [
-            {tr:"Durum",en:"state/status/situation"},{tr:"Ülke",en:"country"},{tr:"Problem",en:"problem/issue"},{tr:"Vaka",en:"case/event"},{tr:"Şirket",en:"company"},
-            {tr:"Sistem",en:"system"},{tr:"Kullanmak",en:"use/utilize"},{tr:"Denemek",en:"try/attempt"},{tr:"İhtiyaç",en:"need"},{tr:"Hissetmek",en:"feel"},
-            {tr:"Ayrılmak",en:"leave/separate"},{tr:"Aramak",en:"call/search"},{tr:"Tutmak",en:"keep/hold"},{tr:"Başlamak",en:"start/begin"},{tr:"Görünmek",en:"seem/appear"},
-            {tr:"Yardım",en:"help/aid"},{tr:"Konuşmak",en:"talk/speak"},{tr:"Dönmek",en:"turn/return"},{tr:"Göstermek",en:"show/display"},
-            {tr:"Büyük",en:"great/big/large"},{tr:"Kendi",en:"own/self"},{tr:"Diğer",en:"other/another"},{tr:"Eski",en:"old/ancient"},{tr:"Doğru",en:"right/correct/true"},
-            {tr:"Yüksek",en:"high/tall"},{tr:"Farklı",en:"different"},{tr:"Küçük",en:"small/little"},{tr:"Genç",en:"young"},
-            {tr:"Kötü",en:"bad/evil"},{tr:"Aynı",en:"same"},{tr:"Çok",en:"very/much/many"},{tr:"Sık Sık",en:"often/frequently"},{tr:"Birlikte",en:"together"}
-        ],
-        hard: [
-            {tr:"Olmak",en:"become/happen"},{tr:"Önemli",en:"important/significant"},{tr:"Az",en:"few/little/less"},{tr:"Kamu",en:"public"},{tr:"Yapabilmek",en:"able/can"},
-            {tr:"Gerçekten",en:"really/actually/truly"},{tr:"Hızlıca",en:"quickly/fast"},{tr:"Yavaşça",en:"slowly"},{tr:"Her zaman",en:"always/forever"},{tr:"Bazen",en:"sometimes/occasionally"},
-            {tr:"Genellikle",en:"usually/generally"},{tr:"Zaten",en:"already"},{tr:"Neredeyse",en:"almost/nearly"},{tr:"Özellikle",en:"especially/particularly"},{tr:"Muhtemelen",en:"probably/maybe"},
-            {tr:"Sonunda",en:"finally/eventually"},{tr:"Kolayca",en:"easily"},{tr:"Son zamanlarda",en:"recently/lately"},{tr:"Hemen",en:"immediately/now"},
-            {tr:"Şu anda",en:"currently/now"},{tr:"Açıkça",en:"clearly/obviously"},{tr:"Basitçe",en:"simply"},{tr:"Tam olarak",en:"exactly/precisely"},{tr:"Güçlüce",en:"strongly"}
-        ]
+        easy: [{tr:"Zaman",en:"time"},{tr:"Yıl",en:"year"},{tr:"İnsanlar",en:"people"},{tr:"Yol",en:"way/road/path"},{tr:"Gün",en:"day"},{tr:"Adam",en:"man"},{tr:"Şey",en:"thing"},{tr:"Kadın",en:"woman"},{tr:"Hayat",en:"life"},{tr:"Çocuk",en:"child/kid"},{tr:"Dünya",en:"world"},{tr:"Okul",en:"school"},{tr:"Aile",en:"family"},{tr:"Öğrenci",en:"student"},{tr:"Grup",en:"group"},{tr:"El",en:"hand"},{tr:"Parça",en:"part/piece"},{tr:"Yer",en:"place/location"},{tr:"Hafta",en:"week"},{tr:"Kelime",en:"word"},{tr:"İş",en:"work/job"},{tr:"Yapmak",en:"make/do"},{tr:"Almak",en:"take/get/buy"},{tr:"Vermek",en:"give"},{tr:"Gelmek",en:"come"},{tr:"Bakmak",en:"look"},{tr:"İstemek",en:"want"},{tr:"Bulmak",en:"find"},{tr:"Söylemek",en:"tell/say"},{tr:"Sormak",en:"ask"},{tr:"İyi",en:"good/well"},{tr:"Yeni",en:"new"},{tr:"İlk",en:"first"},{tr:"Son",en:"last/end"},{tr:"Uzun",en:"long"}],
+        medium: [{tr:"Durum",en:"state/status/situation"},{tr:"Ülke",en:"country"},{tr:"Problem",en:"problem/issue"},{tr:"Vaka",en:"case/event"},{tr:"Şirket",en:"company"},{tr:"Sistem",en:"system"},{tr:"Kullanmak",en:"use/utilize"},{tr:"Denemek",en:"try/attempt"},{tr:"İhtiyaç",en:"need"},{tr:"Hissetmek",en:"feel"},{tr:"Ayrılmak",en:"leave/separate"},{tr:"Aramak",en:"call/search"},{tr:"Tutmak",en:"keep/hold"},{tr:"Başlamak",en:"start/begin"},{tr:"Görünmek",en:"seem/appear"},{tr:"Yardım",en:"help/aid"},{tr:"Konuşmak",en:"talk/speak"},{tr:"Dönmek",en:"turn/return"},{tr:"Göstermek",en:"show/display"},{tr:"Büyük",en:"great/big/large"},{tr:"Kendi",en:"own/self"},{tr:"Diğer",en:"other/another"},{tr:"Eski",en:"old/ancient"},{tr:"Doğru",en:"right/correct/true"},{tr:"Yüksek",en:"high/tall"},{tr:"Farklı",en:"different"},{tr:"Küçük",en:"small/little"},{tr:"Genç",en:"young"},{tr:"Kötü",en:"bad/evil"},{tr:"Aynı",en:"same"},{tr:"Çok",en:"very/much/many"},{tr:"Sık Sık",en:"often/frequently"},{tr:"Birlikte",en:"together"}],
+        hard: [{tr:"Olmak",en:"become/happen"},{tr:"Önemli",en:"important/significant"},{tr:"Az",en:"few/little/less"},{tr:"Kamu",en:"public"},{tr:"Yapabilmek",en:"able/can"},{tr:"Gerçekten",en:"really/actually/truly"},{tr:"Hızlıca",en:"quickly/fast"},{tr:"Yavaşça",en:"slowly"},{tr:"Her zaman",en:"always/forever"},{tr:"Bazen",en:"sometimes/occasionally"},{tr:"Genellikle",en:"usually/generally"},{tr:"Zaten",en:"already"},{tr:"Neredeyse",en:"almost/nearly"},{tr:"Özellikle",en:"especially/particularly"},{tr:"Muhtemelen",en:"probably/maybe"},{tr:"Sonunda",en:"finally/eventually"},{tr:"Kolayca",en:"easily"},{tr:"Son zamanlarda",en:"recently/lately"},{tr:"Hemen",en:"immediately/now"},{tr:"Şu anda",en:"currently/now"},{tr:"Açıkça",en:"clearly/obviously"},{tr:"Basitçe",en:"simply"},{tr:"Tam olarak",en:"exactly/precisely"},{tr:"Güçlüce",en:"strongly"}]
     };
 
     const sys = {
         name: "", score: 0, time: 30, active: false, hearts: 3, learned: [], cur: null, currentMode: 'easy',
+        isDuel: false, p1N: "", p2N: "", p1S: 0, p2S: 0, duelTurn: 1,
+        
         getRank: (s, n) => {
             if(n === 'burak') return "DEVELOPER";
-            if(s >= 2000) return "ELİT";
-            if(s >= 1000) return "ELMAS";
-            if(s >= 500) return "ALTIN";
-            if(s >= 200) return "DEMİR";
-            return "BRONZ";
+            if(s >= 2000) return "ELİT"; if(s >= 1000) return "ELMAS"; if(s >= 500) return "ALTIN"; if(s >= 200) return "DEMİR"; return "BRONZ";
         },
         auth: () => {
             const n = document.getElementById('username').value.trim().toLowerCase();
@@ -185,16 +174,19 @@
                 document.getElementById('main-menu').style.display='block';
                 document.getElementById('profile-trigger').style.display='block';
                 document.getElementById('diary-trigger').style.display='block';
+                document.getElementById('suggest-trigger').style.display='block';
                 document.getElementById('welcome-msg').innerText = "HOŞ GELDİN, " + n.toUpperCase();
             });
         },
         openDifficulty: () => { document.getElementById('main-menu').style.display='none'; document.getElementById('difficulty-selection').style.display='block'; },
+        show1vs1: () => { document.getElementById('main-menu').style.display='none'; document.getElementById('1vs1-inputs').style.display='block'; sys.isDuel = true; },
+        startDuelPrep: () => { sys.p1N = document.getElementById('p1-name').value || "P1"; sys.p2N = document.getElementById('p2-name').value || "P2"; sys.name = sys.p1N; sys.openDifficulty(); },
         login: (l) => {
             sys.currentMode = l; sys.hearts = 3; sys.score = 0; sys.time = 30;
             document.getElementById('difficulty-selection').style.display='none';
             document.getElementById('scr-game').style.display='flex';
             document.getElementById('display-name').innerText = sys.name.toUpperCase();
-            document.getElementById('score').innerText = "0";
+            if(sys.isDuel) { document.getElementById('turn-notice').style.display='block'; document.getElementById('current-player-turn').innerText = sys.name.toUpperCase(); }
             sys.updateHearts(); sys.start();
         },
         start: () => {
@@ -214,56 +206,72 @@
         },
         checkAnswer: () => {
             let userAns = document.getElementById('answer').value.toLowerCase().trim();
-            // '/' ile ayrılmış tüm doğru cevapları listeye çevirip kontrol et
-            let correctAnswers = sys.cur.en.toLowerCase().split('/');
-            
-            if(correctAnswers.includes(userAns)) {
-                sys.score += 50; sys.time += 3;
-                document.getElementById('score').innerText = sys.score;
-                document.getElementById('snd-success').play();
-                confetti({ particleCount: 30 });
-                if(!sys.learned.includes(sys.cur.tr)) {
-                    sys.learned.push(sys.cur.tr);
-                    db.ref('users/' + sys.name).update({ learned: sys.learned });
-                }
+            let correctOnes = sys.cur.en.toLowerCase().split('/');
+            if(correctOnes.includes(userAns)) {
+                sys.score += 50; sys.time += 3; document.getElementById('score').innerText = sys.score;
+                document.getElementById('snd-success').play(); confetti({ particleCount: 20 });
+                if(!sys.learned.includes(sys.cur.tr)) { sys.learned.push(sys.cur.tr); db.ref('users/' + sys.name).update({ learned: sys.learned }); }
                 sys.next();
             } else {
-                sys.hearts--; sys.updateHearts();
-                document.getElementById('snd-error').play();
-                const js = document.getElementById('jumpscare'); js.style.display='flex';
-                setTimeout(() => js.classList.add('active'), 10);
+                sys.hearts--; sys.updateHearts(); document.getElementById('snd-error').play();
+                const js = document.getElementById('jumpscare'); js.style.display='flex'; setTimeout(() => js.classList.add('active'), 10);
                 setTimeout(() => { js.classList.remove('active'); js.style.display='none'; }, 600);
                 if(sys.hearts <= 0) { sys.active = false; sys.finish(); } else { sys.next(); }
             }
         },
         finish: () => {
-            db.ref('users/' + sys.name).once('value', snap => {
-                if(sys.score > (snap.val().record || 0)) db.ref('users/' + sys.name).update({ record: sys.score });
-                alert("OYUN BİTTİ! SKORUN: " + sys.score);
-                location.reload();
+            if(!sys.isDuel) {
+                db.ref('users/' + sys.name).once('value', snap => {
+                    if(sys.score > (snap.val().record || 0)) db.ref('users/' + sys.name).update({ record: sys.score });
+                    alert("OYUN BİTTİ! SKOR: " + sys.score); location.reload();
+                });
+            } else {
+                if(sys.duelTurn === 1) { sys.p1S = sys.score; sys.duelTurn = 2; sys.name = sys.p2N; alert(sys.p2N + " SIRASI!"); sys.login(sys.currentMode); }
+                else { sys.p2S = sys.score; let win = sys.p1S > sys.p2S ? sys.p1N : (sys.p2S > sys.p1S ? sys.p2N : "BERABERE"); alert("KAZANAN: " + win + "\n" + sys.p1N + ": " + sys.p1S + " | " + sys.p2N + ": " + sys.p2S); location.reload(); }
+            }
+        },
+        showLeaderboard: () => {
+            document.getElementById('leaderboard-modal').style.display='flex';
+            db.ref('users').orderByChild('record').limitToLast(10).once('value', snap => {
+                const list = document.getElementById('leader-list'); list.innerHTML = "";
+                let players = []; snap.forEach(u => players.push({n: u.key, s: u.val().record}));
+                players.reverse().forEach((p, i) => {
+                    let r = sys.getRank(p.s, p.n);
+                    list.innerHTML += `<div class="admin-item">#${i+1} <b>${p.n.toUpperCase()}</b> - <span class="rank-${r}">${r}</span> - ${p.s}</div>`;
+                });
             });
         },
+        showSuggest: () => {
+            document.getElementById('suggest-modal').style.display='flex';
+            db.ref('suggestions').limitToLast(15).on('value', snap => {
+                const list = document.getElementById('public-suggest-list'); list.innerHTML = "";
+                snap.forEach(s => { list.innerHTML = `<div class="admin-item">${s.val().msg}</div>` + list.innerHTML; });
+            });
+        },
+        sendSuggest: () => {
+            const txt = document.getElementById('suggest-text').value.trim();
+            if(!txt) return;
+            db.ref('users/' + sys.name).once('value', snap => {
+                let r = sys.getRank(snap.val().record || 0, sys.name);
+                db.ref('suggestions').push({ msg: `[${r}] ${sys.name.toUpperCase()}: ${txt}` });
+                document.getElementById('suggest-text').value = "";
+            });
+        },
+        filterDiary: (m) => {
+            const cont = document.getElementById('diary-content'); cont.innerHTML = "";
+            POOLS[m].forEach(w => {
+                const ok = sys.learned.includes(w.tr);
+                cont.innerHTML += `<div class="word-tab ${ok ? 'word-learned' : ''}">${w.tr} ${ok ? '✅' : ''}</div>`;
+            });
+        },
+        showDiary: () => { document.getElementById('diary-modal').style.display='flex'; sys.filterDiary('easy'); },
         showProfile: () => {
             db.ref('users/' + sys.name).once('value', snap => {
-                const u = snap.val();
-                document.getElementById('prof-record').innerText = u.record;
-                const r = sys.getRank(u.record, sys.name);
-                document.getElementById('prof-rank').innerText = r;
-                document.getElementById('prof-rank').className = 'rank-' + r;
-                document.getElementById('prof-dev').innerHTML = (sys.name === 'burak') ? '<span class="dev-badge">DEVELOPER</span>' : '';
-                document.getElementById('profile-modal').style.display='flex';
+                const u = snap.val(); const r = sys.getRank(u.record, sys.name);
+                alert(`OYUNCU: ${sys.name.toUpperCase()}\nREKOR: ${u.record}\nRÜTBE: ${r}`);
             });
         },
-        showDiary: () => { document.getElementById('diary-modal').style.display = 'flex'; sys.filterDiary('easy', document.querySelector('.tab-btn')); },
-        filterDiary: (mode, btn) => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
-            const cont = document.getElementById('diary-content'); cont.innerHTML = "";
-            POOLS[mode].forEach(w => {
-                const isLearned = sys.learned.includes(w.tr);
-                cont.innerHTML += `<div class="word-tab ${isLearned ? 'word-learned' : ''}">${w.tr}: ${w.en.replace(/\//g, ', ')} ${isLearned ? '✅' : ''}</div>`;
-            });
-        },
-        backToMenu: () => { document.getElementById('difficulty-selection').style.display='none'; document.getElementById('main-menu').style.display='block'; }
+        backToMenu: () => { document.getElementById('1vs1-inputs').style.display='none'; document.getElementById('difficulty-selection').style.display='none'; document.getElementById('main-menu').style.display='block'; sys.isDuel = false; }
     };
     document.getElementById('answer').addEventListener('keypress', e => { if(e.key === 'Enter') sys.checkAnswer(); });
 </script>
