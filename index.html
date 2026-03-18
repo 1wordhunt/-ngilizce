@@ -26,6 +26,7 @@
         .btn { width: 100%; padding: 16px; border-radius: 18px; border: none; font-size: 14px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-bottom: 12px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn:active { transform: scale(0.96); }
         
+        /* Rütbe Renkleri */
         .rank-DEVELOPER { color: var(--red); text-shadow: 0 0 15px var(--red); font-weight: 900; }
         .rank-ELİT { color: #ff4757; text-shadow: 0 0 10px #ff4757; }
         .rank-ELMAS { color: var(--diamond); text-shadow: 0 0 10px var(--diamond); }
@@ -35,10 +36,10 @@
 
         .overlay { position: fixed; inset: 0; z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); }
         .list-container { text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 20px; max-height: 250px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05); margin-top: 10px; }
-        .list-item { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+        .list-item { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
         
-        .word-tab { display: inline-block; padding: 8px 12px; margin: 4px; border-radius: 10px; background: rgba(255,255,255,0.05); font-size: 12px; border: 1px solid rgba(255,255,255,0.1); }
-        .word-learned { border-color: var(--green); color: var(--green); background: rgba(46, 204, 113, 0.1); }
+        .word-tab { display: inline-block; padding: 8px 12px; margin: 4px; border-radius: 10px; background: rgba(255,255,255,0.05); font-size: 11px; border: 1px solid rgba(255,255,255,0.1); }
+        .word-learned { border-color: var(--green); color: var(--green); background: rgba(46, 204, 113, 0.1); font-weight: 800; }
 
         #jumpscare { position: fixed; inset: 0; z-index: 8000; display: none; align-items: center; justify-content: center; pointer-events: none; }
         .ghost-img { font-size: 180px; opacity: 0; transition: 0.5s; transform: scale(0.1); }
@@ -51,15 +52,15 @@
 <audio id="snd-success" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
 <audio id="snd-error" src="https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3"></audio>
 
-<div id="top-bar" style="position: fixed; top: 15px; width: 100%; display: none; justify-content: center; gap: 8px; z-index: 5000; flex-wrap: wrap; padding: 0 10px;">
-    <button class="btn" style="width: auto; padding: 10px 15px; background: rgba(255,255,255,0.1); color:white; font-size: 12px;" onclick="sys.showProfile()">👤 PROFİL</button>
-    <button class="btn" style="width: auto; padding: 10px 15px; background: var(--purple); color:white; font-size: 12px;" onclick="sys.showFriends()">👥 ARKADAŞLAR</button>
-    <button class="btn" style="width: auto; padding: 10px 15px; background: var(--blue); color:white; font-size: 12px;" onclick="sys.showDiary()">📖 GÜNLÜK</button>
+<div id="top-bar" style="position: fixed; top: 15px; width: 100%; display: none; justify-content: center; gap: 5px; z-index: 5000; flex-wrap: wrap; padding: 0 5px;">
+    <button class="btn" style="width: auto; padding: 8px 10px; background: rgba(255,255,255,0.1); color:white; font-size: 10px;" onclick="sys.showProfile()">👤 PROFİL</button>
+    <button class="btn" style="width: auto; padding: 8px 10px; background: var(--purple); color:white; font-size: 10px;" onclick="sys.showFriends()">👥 ARKADAŞLAR</button>
+    <button class="btn" style="width: auto; padding: 8px 10px; background: var(--blue); color:white; font-size: 10px;" onclick="sys.showDiary()">📖 GÜNLÜK</button>
 </div>
 
 <div id="scr-login" style="display: contents;">
     <div class="big-card">
-        <div style="font-family:'Orbitron'; font-weight:900; font-size:36px; color: var(--green); margin-bottom:25px;">WORD HUNT</div>
+        <div style="font-family:'Orbitron'; font-weight:900; font-size:32px; color: var(--green); margin-bottom:20px;">WORD HUNT</div>
         <div id="login-form">
             <input type="text" id="username" placeholder="KULLANICI ADI">
             <input type="password" id="password" placeholder="ŞİFRE">
@@ -68,7 +69,7 @@
         <div id="main-menu" style="display: none;">
             <div class="box-title" id="welcome-msg" style="color:var(--gold)"></div>
             <button class="btn" style="background: var(--green); color: black;" onclick="sys.openDifficulty()">🎮 TEKLİ OYNA</button>
-            <button class="btn" style="background: var(--orange); color: white;" onclick="sys.showDuelMenu()">⚔️ DÜELLO MODU</button>
+            <button class="btn" style="background: var(--orange); color: white;" onclick="sys.showDuelMenu()">⚔️ DÜELLO SİSTEMİ</button>
             <button class="btn" style="background: var(--blue); color: white;" onclick="sys.showLeaderboard()">🏆 SIRALAMA</button>
             <button class="btn" style="background: var(--gold); color: black;" onclick="sys.showSuggest()">💡 ÖNERİLER</button>
             <button class="btn" style="background: #333; color: white;" onclick="location.reload()">ÇIKIŞ YAP</button>
@@ -83,7 +84,7 @@
         <div id="duel-menu" style="display: none;">
             <div class="box-title">DÜELLO</div>
             <input type="text" id="vs-target" placeholder="RAKİP ADI">
-            <button class="btn" style="background:var(--orange); color:white" onclick="sys.sendVsRequest()">İSTEK AT (UZAKTAN)</button>
+            <button class="btn" style="background:var(--orange); color:white" onclick="sys.sendVsRequest()">DAVET AT (UZAKTAN)</button>
             <button class="btn" style="background:#444; color:white" onclick="sys.showLocalDuel()">LOKAL (YAN YANA)</button>
             <button class="btn" style="background:#222; color: white;" onclick="sys.backToMenu()">GERİ DÖN</button>
         </div>
@@ -92,16 +93,16 @@
 
 <div id="scr-game" class="overlay">
     <div class="big-card" style="border-color: var(--green);">
-        <div id="hearts-container" style="font-size:28px; margin-bottom:15px;">❤️❤️❤️</div>
-        <div style="display:flex; justify-content: space-between; font-size: 14px; margin-bottom: 20px;">
+        <div id="hearts-container" style="font-size:28px; margin-bottom:10px;">❤️❤️❤️</div>
+        <div style="display:flex; justify-content: space-between; font-size: 12px; margin-bottom: 15px;">
             <span id="display-name" style="color: var(--green); font-weight: 900;">...</span>
             <span>SKOR: <b id="score" style="color:var(--gold)">0</b></span>
         </div>
-        <div id="duel-info" style="color:var(--orange); font-weight:900; margin-bottom:10px; display:none;">SIRA: <span id="cur-p"></span></div>
-        <div id="word" style="font-size: 42px; font-weight: 900; margin: 30px 0;">...</div>
-        <input type="text" id="answer" placeholder="İngilizcesini yaz..." autocomplete="off">
-        <button class="btn" onclick="sys.checkAnswer()" style="background:var(--blue); color:white">KONTROL ET</button>
-        <div style="font-size: 16px;">SÜRE: <span id="timer" style="color:var(--red); font-weight: 900;">30</span></div>
+        <div id="duel-info" style="color:var(--orange); font-weight:900; margin-bottom:5px; display:none; font-size:12px;">SIRA: <span id="cur-p"></span></div>
+        <div id="word" style="font-size: 38px; font-weight: 900; margin: 20px 0;">...</div>
+        <input type="text" id="answer" placeholder="Cevap..." autocomplete="off">
+        <button class="btn" onclick="sys.checkAnswer()" style="background:var(--blue); color:white">KONTROL</button>
+        <div style="font-size: 14px;">SÜRE: <span id="timer" style="color:var(--red); font-weight: 900;">30</span></div>
     </div>
 </div>
 
@@ -109,10 +110,10 @@
     <div id="modal-box" class="big-card">
         <div id="modal-content"></div>
         <div id="modal-actions" style="display:none; gap:10px; margin-top:15px;">
-            <button id="modal-yes" class="btn" style="background:var(--green); color:black; font-size:12px;">KABUL ET</button>
-            <button id="modal-no" class="btn" style="background:var(--red); color:white; font-size:12px;">REDDET</button>
+            <button id="modal-yes" class="btn" style="background:var(--green); color:black; font-size:11px;">ONAYLA</button>
+            <button id="modal-no" class="btn" style="background:var(--red); color:white; font-size:11px;">REDDET</button>
         </div>
-        <button id="modal-close-btn" class="btn" style="background:#333; margin-top:20px; color:white;">KAPAT</button>
+        <button id="modal-close-btn" class="btn" style="background:#333; margin-top:20px; color:white; font-size:11px;">KAPAT</button>
     </div>
 </div>
 
@@ -132,9 +133,9 @@
     const db = firebase.database();
 
     const POOLS = {
-        easy: [{tr:"Zaman",en:"time"},{tr:"Yıl",en:"year"},{tr:"Gün",en:"day"},{tr:"Su",en:"water"},{tr:"Okul",en:"school"}],
-        medium: [{tr:"Durum",en:"state"},{tr:"Ülke",en:"country"},{tr:"Sistem",en:"system"},{tr:"Şirket",en:"company"}],
-        hard: [{tr:"Önemli",en:"important"},{tr:"Muhtemelen",en:"probably"},{tr:"Zaten",en:"already"}]
+        easy: [{tr:"Zaman",en:"time"},{tr:"Yıl",en:"year"},{tr:"Gün",en:"day"},{tr:"Su",en:"water"},{tr:"Okul",en:"school"},{tr:"El",en:"hand"},{tr:"İyi",en:"good"},{tr:"Yeni",en:"new"}],
+        medium: [{tr:"Durum",en:"state"},{tr:"Ülke",en:"country"},{tr:"Sistem",en:"system"},{tr:"Şirket",en:"company"},{tr:"Farklı",en:"different"},{tr:"Büyük",en:"large"}],
+        hard: [{tr:"Önemli",en:"important"},{tr:"Muhtemelen",en:"probably"},{tr:"Zaten",en:"already"},{tr:"Açıkça",en:"clearly"},{tr:"Özellikle",en:"especially"}]
     };
 
     const sys = {
@@ -152,14 +153,15 @@
             if(!n || !p) return;
             db.ref('users/' + n).once('value', snap => {
                 let u = snap.val();
-                if(u && u.pass !== p) return sys.showModal("Şifre Yanlış!");
+                if(u && u.pass !== p) return sys.showModal("Şifre Hatalı!");
                 sys.name = n;
                 if(!u) db.ref('users/' + n).set({ pass: p, record: 0, learned: [], friends: [] });
                 sys.learned = u?.learned || [];
                 document.getElementById('login-form').style.display='none';
                 document.getElementById('main-menu').style.display='block';
                 document.getElementById('top-bar').style.display='flex';
-                document.getElementById('welcome-msg').innerText = "SELAM, " + n.toUpperCase();
+                let rank = sys.getRank(u?.record || 0, n);
+                document.getElementById('welcome-msg').innerHTML = `SELAM, <span class="rank-${rank}">${n.toUpperCase()}</span>`;
                 sys.listenRequests();
             });
         },
@@ -201,75 +203,96 @@
         showProfile: () => {
             db.ref('users/' + sys.name).once('value', snap => {
                 const u = snap.val(); const r = sys.getRank(u.record, sys.name);
-                sys.showModal(`<div class="box-title">PROFİL</div>
-                               <div class="list-item"><span>AD:</span><b>${sys.name.toUpperCase()}</b></div>
-                               <div class="list-item"><span>REKOR:</span><b style="color:var(--gold)">${u.record}</b></div>
-                               <div class="list-item"><span>RÜTBE:</span><b class="rank-${r}">${r}</b></div>`);
+                sys.showModal(`<div class="box-title">PROFİLİM</div>
+                               <div class="list-item"><span>OYUNCU:</span><b class="rank-${r}">${sys.name.toUpperCase()}</b></div>
+                               <div class="list-item"><span>EN YÜKSEK SKOR:</span><b style="color:var(--gold)">${u.record}</b></div>
+                               <div class="list-item"><span>MEVCUT RÜTBE:</span><b class="rank-${r}">${r}</b></div>`);
+            });
+        },
+
+        showLeaderboard: () => {
+            db.ref('users').orderByChild('record').once('value', snap => {
+                let html = `<div class="box-title">DÜNYA SIRALAMASI</div><div class="list-container">`;
+                let users = []; snap.forEach(u => { users.push({ n: u.key, s: u.val().record || 0 }); });
+                users.sort((a,b) => b.s - a.s).slice(0,15).forEach((u, i) => {
+                    let r = sys.getRank(u.s, u.n);
+                    html += `<div class="list-item"><span>#${i+1} <b class="rank-${r}">${u.n.toUpperCase()}</b></span><span class="rank-${r}">${u.s}</span></div>`;
+                });
+                sys.showModal(html + `</div>`);
+            });
+        },
+
+        showSuggest: () => {
+            let html = `<div class="box-title">ÖNERİLER</div>
+                        <textarea id="s-msg" placeholder="Geliştiriciye not bırak..."></textarea>
+                        <button class="btn" style="background:var(--gold); color:black" onclick="sys.sendS()">FİKRİMİ GÖNDER</button>
+                        <div id="s-list" class="list-container">Yükleniyor...</div>`;
+            sys.showModal(html);
+            db.ref('suggestions').limitToLast(10).on('value', snap => {
+                const list = document.getElementById('s-list'); if(!list) return;
+                list.innerHTML = "";
+                snap.forEach(s => { 
+                    const data = s.val();
+                    list.innerHTML = `<div class="list-item" style="flex-direction:column; align-items:start">
+                        <b class="rank-${data.rank}">${data.rank} | ${data.user}:</b>
+                        <span style="font-size:11px; opacity:0.9">${data.msg}</span>
+                    </div>` + list.innerHTML; 
+                });
+            });
+        },
+
+        sendS: () => {
+            const m = document.getElementById('s-msg').value.trim();
+            if(m) { 
+                db.ref('users/'+sys.name).once('value', snap => {
+                    const r = sys.getRank(snap.val().record, sys.name);
+                    db.ref('suggestions').push({ user: sys.name.toUpperCase(), msg: m, rank: r }); 
+                    document.getElementById('s-msg').value = ""; 
+                });
+            }
+        },
+
+        showDiary: () => {
+            let html = `<div class="box-title">GELİŞİM GÜNLÜĞÜ</div>
+                <div style="display:flex; gap:3px; margin-bottom:10px;">
+                    <button class="btn" style="background:var(--green); font-size:9px; padding:10px" onclick="sys.renderDiary('easy')">KOLAY</button>
+                    <button class="btn" style="background:var(--orange); font-size:9px; padding:10px" onclick="sys.renderDiary('medium')">ORTA</button>
+                    <button class="btn" style="background:var(--red); font-size:9px; padding:10px" onclick="sys.renderDiary('hard')">ZOR</button>
+                </div>
+                <div id="diary-box" class="list-container"></div>`;
+            sys.showModal(html); sys.renderDiary('easy');
+        },
+
+        renderDiary: (mode) => {
+            const box = document.getElementById('diary-box'); box.innerHTML = "";
+            POOLS[mode].forEach(w => {
+                let check = sys.learned.includes(w.tr);
+                box.innerHTML += `<div class="word-tab ${check?'word-learned':''}">${w.tr} ${check?'✓':''}</div>`;
             });
         },
 
         showFriends: () => {
             db.ref('users/' + sys.name + '/friends').once('value', snap => {
-                let html = `<div class="box-title">ARKADAŞLAR</div>
+                let html = `<div class="box-title">ARKADAŞLARIM</div>
                             <input type="text" id="add-f-name" placeholder="Kullanıcı Adı">
-                            <button class="btn" style="background:var(--purple); color:white; padding:10px" onclick="sys.sendFriendReq()">EKLE</button>
+                            <button class="btn" style="background:var(--purple); color:white; padding:10px" onclick="sys.sendFriendReq()">İSTEK GÖNDER</button>
                             <div class="list-container">`;
                 if(snap.exists()) {
-                    snap.forEach(f => { html += `<div class="list-item"><span>${f.val().toUpperCase()}</span><button onclick="sys.challenge('${f.val()}')" style="background:var(--orange); color:white; padding:5px; border-radius:5px; font-size:10px">VS</button></div>`; });
-                } else html += `<p>Henüz kimse yok.</p>`;
+                    snap.forEach(f => { 
+                        html += `<div class="list-item"><span>${f.val().toUpperCase()}</span><button onclick="sys.challenge('${f.val()}')" style="background:var(--orange); color:white; padding:5px; border-radius:5px; font-size:10px">MEYDAN OKU</button></div>`; 
+                    });
+                } else html += `<p style="font-size:11px; text-align:center">Arkadaş listen boş.</p>`;
                 sys.showModal(html + `</div>`);
             });
         },
 
         sendFriendReq: () => {
             const t = document.getElementById('add-f-name').value.trim().toLowerCase();
-            if(t && t !== sys.name) { db.ref('requests/' + t).set({ from: sys.name, type: 'friend' }); sys.showModal("İstek gitti!"); }
+            if(t && t !== sys.name) { db.ref('requests/' + t).set({ from: sys.name, type: 'friend' }); sys.showModal("Arkadaşlık isteği iletildi!"); }
         },
 
-        challenge: (n) => { db.ref('requests/' + n).set({ from: sys.name, type: 'vs' }); sys.showModal("Davet gönderildi!"); },
-
+        challenge: (n) => { db.ref('requests/' + n).set({ from: sys.name, type: 'vs' }); sys.showModal("VS daveti gönderildi!"); },
         sendVsRequest: () => { const t = document.getElementById('vs-target').value.trim().toLowerCase(); if(t) sys.challenge(t); },
-
-        showLeaderboard: () => {
-            db.ref('users').orderByChild('record').once('value', snap => {
-                let html = `<div class="box-title">SIRALAMA</div><div class="list-container">`;
-                let users = []; snap.forEach(u => { users.push({ n: u.key, s: u.val().record || 0 }); });
-                users.sort((a,b) => b.s - a.s).slice(0,10).forEach((u, i) => {
-                    let r = sys.getRank(u.s, u.n);
-                    html += `<div class="list-item"><span>#${i+1} ${u.n.toUpperCase()}</span><span class="rank-${r}">${u.s}</span></div>`;
-                });
-                sys.showModal(html + `</div>`);
-            });
-        },
-
-        showDiary: () => {
-            let html = `<div class="box-title">GÜNLÜK</div><div class="list-container">`;
-            Object.keys(POOLS).forEach(m => {
-                POOLS[m].forEach(w => {
-                    let ok = sys.learned.includes(w.tr);
-                    html += `<div class="word-tab ${ok?'word-learned':''}">${w.tr}</div>`;
-                });
-            });
-            sys.showModal(html + `</div>`);
-        },
-
-        showSuggest: () => {
-            let html = `<div class="box-title">ÖNERİLER</div>
-                        <textarea id="s-msg" placeholder="Fikrini yaz..."></textarea>
-                        <button class="btn" style="background:var(--gold); color:black" onclick="sys.sendS()">GÖNDER</button>
-                        <div id="s-list" class="list-container">Yükleniyor...</div>`;
-            sys.showModal(html);
-            db.ref('suggestions').limitToLast(5).on('value', snap => {
-                const list = document.getElementById('s-list'); if(!list) return;
-                list.innerHTML = "";
-                snap.forEach(s => { list.innerHTML = `<div class="list-item" style="flex-direction:column; align-items:start"><b>${s.val().user}:</b><span>${s.val().msg}</span></div>` + list.innerHTML; });
-            });
-        },
-
-        sendS: () => {
-            const m = document.getElementById('s-msg').value.trim();
-            if(m) { db.ref('suggestions').push({ user: sys.name.toUpperCase(), msg: m }); document.getElementById('s-msg').value = ""; }
-        },
 
         login: (l) => {
             sys.currentMode = l; sys.hearts = 3; sys.score = 0; sys.time = 30;
@@ -315,19 +338,20 @@
             document.getElementById('scr-login').style.display='contents';
             if(!sys.isDuel) {
                 db.ref('users/'+sys.name).once('value', snap => {
-                    if(sys.score > (snap.val().record||0)) db.ref('users/'+sys.name).update({record: sys.score});
-                    sys.showModal(`OYUN BİTTİ! SKOR: ${sys.score}`); sys.backToMenu();
+                    const old = snap.val().record || 0;
+                    if(sys.score > old) db.ref('users/'+sys.name).update({record: sys.score});
+                    sys.showModal(`<div class="box-title">OYUN BİTTİ</div><h1>${sys.score}</h1><p>SKORUN KAYDEDİLDİ!</p>`, () => sys.backToMenu());
                 });
             } else {
                 if(sys.duelTurn === 1) { sys.p1S = sys.score; sys.duelTurn = 2; sys.showModal("SIRA RAKİPTE!", () => sys.login(sys.currentMode)); }
-                else { sys.p2S = sys.score; let w = sys.p1S > sys.p2S ? sys.p1N : sys.p2N; sys.showModal(`KAZANAN: ${w.toUpperCase()}`); sys.backToMenu(); }
+                else { sys.p2S = sys.score; let w = sys.p1S > sys.p2S ? sys.p1N : sys.p2N; sys.showModal(`DÜELLO BİTTİ!<br>KAZANAN: <b>${w.toUpperCase()}</b>`, () => sys.backToMenu()); }
             }
         },
 
         updateHearts: () => { document.getElementById('hearts-container').innerText = "❤️".repeat(sys.hearts) + "🖤".repeat(3-sys.hearts); },
         openDifficulty: () => { document.getElementById('main-menu').style.display='none'; document.getElementById('difficulty-selection').style.display='block'; },
         showDuelMenu: () => { document.getElementById('main-menu').style.display='none'; document.getElementById('duel-menu').style.display='block'; },
-        showLocalDuel: () => { sys.showModal(`<input id="lp1" placeholder="P1 ADI"><input id="lp2" placeholder="P2 ADI"><button class="btn" style="background:var(--orange); color:white" onclick="sys.startL()">BAŞLAT</button>`); },
+        showLocalDuel: () => { sys.showModal(`<div class="box-title">LOKAL DÜELLO</div><input id="lp1" placeholder="P1 ADI"><input id="lp2" placeholder="P2 ADI"><button class="btn" style="background:var(--orange); color:white" onclick="sys.startL()">BAŞLAT</button>`); },
         startL: () => { sys.p1N = document.getElementById('lp1').value || "P1"; sys.p2N = document.getElementById('lp2').value || "P2"; sys.isDuel = true; document.getElementById('modal-container').style.display='none'; sys.openDifficulty(); },
         backToMenu: () => { 
             document.getElementById('difficulty-selection').style.display='none'; 
