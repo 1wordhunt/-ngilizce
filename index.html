@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WORD HUNT | B & H STUDIOS</title>
+    <title>WORD HUNT PRO | B & H STUDIOS</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;800&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
@@ -34,12 +34,15 @@
         .rank-BRONZ { color: var(--bronze); }
 
         .overlay { position: fixed; inset: 0; z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); }
-        .list-container { text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 20px; max-height: 250px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05); margin-top: 10px; }
+        .list-container { text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 20px; max-height: 220px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05); margin-top: 10px; }
         .list-item { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
         
         .word-tab { display: inline-block; padding: 6px 10px; margin: 3px; border-radius: 8px; background: rgba(255,255,255,0.05); font-size: 10px; border: 1px solid rgba(255,255,255,0.1); }
         .word-learned { border-color: var(--green); color: var(--green); background: rgba(46, 204, 113, 0.1); font-weight: 800; }
-        .hearts { font-size: 24px; color: var(--red); margin-bottom: 10px; }
+        .hearts { font-size: 24px; color: var(--red); margin-bottom: 10px; letter-spacing: 5px; }
+
+        .rank-table { width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 10px; }
+        .rank-table td { padding: 5px; border-bottom: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
@@ -47,6 +50,7 @@
 <div id="top-bar" style="position: fixed; top: 15px; width: 100%; display: none; justify-content: center; gap: 5px; z-index: 5000;">
     <button class="btn" style="width: auto; padding: 8px 12px; background: rgba(255,255,255,0.1); color:white; font-size: 10px;" onclick="sys.showProfile()">👤 PROFİL</button>
     <button class="btn" style="width: auto; padding: 8px 12px; background: var(--blue); color:white; font-size: 10px;" onclick="sys.showDiary()">📖 GÜNLÜK</button>
+    <button class="btn" style="width: auto; padding: 8px 12px; background: var(--purple); color:white; font-size: 10px;" onclick="sys.showFriends()">👥 ARKADAŞLAR</button>
 </div>
 
 <div id="scr-login" style="display: contents;">
@@ -79,9 +83,13 @@
 </div>
 
 <div id="modal-container" class="overlay">
-    <div class="big-card">
+    <div class="big-card" style="max-height: 90vh; overflow-y: auto;">
         <div id="modal-content"></div>
-        <button class="btn" style="background:#333; margin-top:20px; color:white;" onclick="document.getElementById('modal-container').style.display='none'">KAPAT</button>
+        <div id="modal-actions" style="display:none; gap:10px; margin-top:10px;">
+            <button id="modal-yes" class="btn" style="background:var(--green); color:black">KABUL</button>
+            <button id="modal-no" class="btn" style="background:var(--red); color:white">RED</button>
+        </div>
+        <button class="btn" style="background:#333; margin-top:15px; color:white;" onclick="document.getElementById('modal-container').style.display='none'">KAPAT</button>
     </div>
 </div>
 
@@ -98,14 +106,30 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // 100 KELİMELİK TAM LİSTE
     const POOLS = {
-        easy: [{tr:"Zaman",en:"time"},{tr:"Yıl",en:"year"},{tr:"İnsanlar",en:"people"},{tr:"Yol",en:"way"},{tr:"Gün",en:"day"},{tr:"Adam",en:"man"},{tr:"Şey",en:"thing"},{tr:"Kadın",en:"woman"},{tr:"Hayat",en:"life"},{tr:"Çocuk",en:"child"},{tr:"Dünya",en:"world"},{tr:"Okul",en:"school"},{tr:"Aile",en:"family"},{tr:"Öğrenci",en:"student"},{tr:"Grup",en:"group"},{tr:"El",en:"hand"},{tr:"Yer",en:"place"},{tr:"Hafta",en:"week"},{tr:"Kelime",en:"word"},{tr:"İş",en:"work"}],
-        medium: [{tr:"Durum",en:"state"},{tr:"Ülke",en:"country"},{tr:"Sorun",en:"problem"},{tr:"Parça",en:"part"},{tr:"Vaka",en:"case"},{tr:"Şirket",en:"company"},{tr:"Sistem",en:"system"},{tr:"Kullanım",en:"use"},{tr:"Yüksek",en:"high"},{tr:"Farklı",en:"different"},{tr:"Büyük",en:"large"},{tr:"Sonraki",en:"next"},{tr:"Erken",en:"early"},{tr:"Önemli",en:"important"},{tr:"Kamu",en:"public"},{tr:"Yetenekli",en:"able"},{tr:"Çok",en:"very"},{tr:"Sık sık",en:"often"},{tr:"Gerçekten",en:"really"},{tr:"Hızlıca",en:"quickly"}],
-        hard: [{tr:"Özellikle",en:"especially"},{tr:"Muhtemelen",en:"probably"},{tr:"Sonunda",en:"finally"},{tr:"Kolayca",en:"easily"},{tr:"Neredeyse",en:"nearly"},{tr:"Şu anda",en:"currently"},{tr:"Açıkça",en:"clearly"},{tr:"Tam olarak",en:"exactly"},{tr:"Güçlü",en:"strongly"},{tr:"Olmak",en:"become"}]
+        easy: [
+            {tr:"Zaman",en:"time"},{tr:"Yıl",en:"year"},{tr:"İnsanlar",en:"people"},{tr:"Yol",en:"way"},{tr:"Gün",en:"day"},{tr:"Adam",en:"man"},{tr:"Şey",en:"thing"},{tr:"Kadın",en:"woman"},{tr:"Hayat",en:"life"},{tr:"Çocuk",en:"child"},
+            {tr:"Dünya",en:"world"},{tr:"Okul",en:"school"},{tr:"Aile",en:"family"},{tr:"Öğrenci",en:"student"},{tr:"Grup",en:"group"},{tr:"El",en:"hand"},{tr:"Yer",en:"place"},{tr:"Hafta",en:"week"},{tr:"Kelime",en:"word"},{tr:"İş",en:"work"},
+            {tr:"Kullanım",en:"use"},{tr:"Yapmak",en:"make"},{tr:"Almak",en:"take"},{tr:"Vermek",en:"give"},{tr:"Gelmek",en:"come"},{tr:"Bakmak",en:"look"},{tr:"İstemek",en:"want"},{tr:"Bulmak",en:"find"},{tr:"İyi",en:"good"},{tr:"Yeni",en:"new"},
+            {tr:"İlk",en:"first"},{tr:"Son",en:"last"},{tr:"Uzun",en:"long"},{tr:"Harika",en:"great"},{tr:"Küçük",en:"little"},{tr:"Kendi",en:"own"},{tr:"Diğer",en:"other"},{tr:"Eski",en:"old"},{tr:"Doğru",en:"right"},{tr:"Büyük",en:"big"}
+        ],
+        medium: [
+            {tr:"Durum",en:"state"},{tr:"Ülke",en:"country"},{tr:"Sorun",en:"problem"},{tr:"Parça",en:"part"},{tr:"Vaka",en:"case"},{tr:"Şirket",en:"company"},{tr:"Sistem",en:"system"},{tr:"Söylemek",en:"tell"},{tr:"Sormak",en:"ask"},{tr:"Denemek",en:"try"},
+            {tr:"İhtiyaç",en:"need"},{tr:"Hissetmek",en:"feel"},{tr:"Olmak",en:"become"},{tr:"Ayrılmak",en:"leave"},{tr:"Aramak",en:"call"},{tr:"Tutmak",en:"keep"},{tr:"Başlamak",en:"start"},{tr:"Görünmek",en:"seem"},{tr:"Yardım",en:"help"},{tr:"Konuşmak",en:"talk"},
+            {tr:"Dönmek",en:"turn"},{tr:"Başlamak",en:"begin"},{tr:"Göstermek",en:"show"},{tr:"Yüksek",en:"high"},{tr:"Farklı",en:"different"},{tr:"Küçük",en:"small"},{tr:"Geniş",en:"large"},{tr:"Sıradaki",en:"next"},{tr:"Erken",en:"early"},{tr:"Genç",en:"young"},
+            {tr:"Önemli",en:"important"},{tr:"Az",en:"few"},{tr:"Kamu",en:"public"},{tr:"Kötü",en:"bad"},{tr:"Aynı",en:"same"},{tr:"Yetenekli",en:"able"},{tr:"Çok",en:"very"},{tr:"Sık sık",en:"often"},{tr:"Gerçekten",en:"really"},{tr:"Hızlıca",en:"quickly"}
+        ],
+        hard: [
+            {tr:"Yavaşça",en:"slowly"},{tr:"İyi/Pekiyi",en:"well"},{tr:"Her zaman",en:"always"},{tr:"Bazen",en:"sometimes"},{tr:"Genellikle",en:"usually"},{tr:"Birlikte",en:"together"},{tr:"Zaten",en:"already"},{tr:"Neredeyse",en:"almost"},{tr:"Özellikle",en:"especially"},{tr:"Muhtemelen",en:"probably"},
+            {tr:"Sonunda",en:"finally"},{tr:"Kolayca",en:"easily"},{tr:"Son zamanlarda",en:"recently"},{tr:"Hemen",en:"immediately"},{tr:"Neredeyse/Yaklaşık",en:"nearly"},{tr:"Şu anda",en:"currently"},{tr:"Açıkça",en:"clearly"},{tr:"Basitçe",en:"simply"},{tr:"Tam olarak",en:"exactly"},{tr:"Güçlüce",en:"strongly"}
+        ]
     };
 
     const sys = {
         name: "", score: 0, learned: [], timer: 30, active: false, lives: 3,
+        isVs: false, p1Name: "", p2Name: "", p1Score: 0, p2Score: 0, vsTurn: 1,
+
         getRank: (s, n) => {
             if(n === 'burak') return "DEVELOPER";
             if(s >= 2000) return "ELİT"; if(s >= 1000) return "ELMAS"; if(s >= 500) return "ALTIN"; if(s >= 200) return "DEMİR"; return "BRONZ";
@@ -119,13 +143,14 @@
                 let u = snap.val();
                 if(u && u.pass && u.pass !== p) return alert("Hatalı şifre!");
                 sys.name = n;
-                if(!u) db.ref('users/' + n).set({ pass: p, record: 0, learned: [] });
+                if(!u) db.ref('users/' + n).set({ pass: p, record: 0, learned: [], friends: [] });
                 sys.learned = u?.learned || [];
                 document.getElementById('login-form').style.display='none';
                 document.getElementById('main-menu').style.display='block';
                 document.getElementById('top-bar').style.display='flex';
                 let r = sys.getRank(u?.record || 0, n);
                 document.getElementById('welcome-msg').innerHTML = `SELAM, <span class="rank-${r}">${n.toUpperCase()}</span>`;
+                sys.listenVs();
             });
         },
 
@@ -133,21 +158,99 @@
             db.ref('users/' + sys.name).once('value', snap => {
                 const u = snap.val(); const r = sys.getRank(u.record, sys.name);
                 sys.showModal(`<div class="box-title">PROFİL</div>
-                    <b class="rank-${r}">${sys.name.toUpperCase()}</b><br>
-                    <span>Rütbe: ${r}</span><br><span>Rekor: ${u.record}</span>
-                    <hr style="margin:10px 0; opacity:0.1">
-                    <div style="font-size:10px; text-align:left">
-                        <b>Rütbe Puanları:</b><br>
-                        0-200: BRONZ | 200-500: DEMİR<br>
-                        500-1000: ALTIN | 1000-2000: ELMAS<br>
-                        2000+: ELİT
-                    </div>`);
+                    <b class="rank-${r}">${sys.name.toUpperCase()} [${r}]</b><br>
+                    <span>EN YÜKSEK SKOR: ${u.record}</span>
+                    <table class="rank-table">
+                        <tr><td><b class="rank-BRONZ">BRONZ</b></td><td>0 - 200 PUAN</td></tr>
+                        <tr><td><b class="rank-DEMİR">DEMİR</b></td><td>200 - 500 PUAN</td></tr>
+                        <tr><td><b class="rank-ALTIN">ALTIN</b></td><td>500 - 1000 PUAN</td></tr>
+                        <tr><td><b class="rank-ELMAS">ELMAS</b></td><td>1000 - 2000 PUAN</td></tr>
+                        <tr><td><b class="rank-ELİT">ELİT</b></td><td>2000+ PUAN</td></tr>
+                        <tr><td><b class="rank-DEVELOPER">DEV</b></td><td>ÖZEL YETKİ</td></tr>
+                    </table>`);
+            });
+        },
+
+        showFriends: () => {
+            db.ref('users/' + sys.name + '/friends').once('value', snap => {
+                let html = `<div class="box-title">ARKADAŞLAR</div>
+                    <input id="f-name" placeholder="Arkadaş adı...">
+                    <button class="btn" style="background:var(--green); color:black; font-size:10px;" onclick="sys.addFriend()">ARKADAŞ EKLE</button>
+                    <div class="list-container">`;
+                if(snap.exists()) {
+                    snap.forEach(f => { 
+                        html += `<div class="list-item"><span>${f.val().toUpperCase()}</span>
+                        <button onclick="sys.sendVsReq('${f.val()}')" style="background:var(--orange); border:none; color:white; padding:5px; border-radius:5px; font-size:9px;">VS AT</button></div>`;
+                    });
+                } else html += "<p style='font-size:10px; padding:10px;'>Henüz arkadaşın yok.</p>";
+                sys.showModal(html + `</div>`);
+            });
+        },
+
+        addFriend: () => {
+            const f = document.getElementById('f-name').value.trim().toLowerCase();
+            if(!f || f === sys.name) return;
+            db.ref('users/' + f).once('value', snap => {
+                if(!snap.exists()) return alert("Kullanıcı bulunamadı!");
+                db.ref('users/' + sys.name + '/friends').push(f);
+                alert("Eklendi!"); sys.showFriends();
+            });
+        },
+
+        listenVs: () => {
+            db.ref('vs_requests/' + sys.name).on('value', snap => {
+                const req = snap.val(); if(!req) return;
+                sys.showConfirm(`${req.from.toUpperCase()} düello istiyor!`, () => {
+                    db.ref('vs_requests/' + sys.name).remove();
+                    sys.isVs = true; sys.p1Name = req.from; sys.p2Name = sys.name;
+                    sys.login('medium');
+                }, () => db.ref('vs_requests/' + sys.name).remove());
+            });
+        },
+
+        sendVsReq: (t) => { db.ref('vs_requests/' + t).set({ from: sys.name }); alert("Davet gönderildi!"); },
+
+        showVsMenu: () => {
+            sys.showModal(`<div class="box-title">VS MODU</div>
+                <button class="btn" style="background:var(--orange)" onclick="sys.showFriends()">ARKADAŞA DAVET AT</button>
+                <button class="btn" style="background:var(--blue)" onclick="sys.localVs()">LOKAL VS (YAN YANA)</button>`);
+        },
+
+        localVs: () => {
+            sys.showModal(`<div class="box-title">LOKAL VS</div>
+                <input id="lp1" placeholder="1. OYUNCU">
+                <input id="lp2" placeholder="2. OYUNCU">
+                <button class="btn" style="background:var(--green); color:black" onclick="sys.startLocalVs()">BAŞLAT</button>`);
+        },
+
+        startLocalVs: () => {
+            sys.p1Name = document.getElementById('lp1').value || "P1";
+            sys.p2Name = document.getElementById('lp2').value || "P2";
+            sys.isVs = true; sys.vsTurn = 1; sys.login('medium');
+        },
+
+        showDiary: () => {
+            let html = `<div class="box-title">GÜNLÜK</div>
+                <div style="display:flex; gap:5px; margin-bottom:10px;">
+                    <button class="btn" style="padding:5px; font-size:9px;" onclick="sys.renderDiary('easy')">KOLAY</button>
+                    <button class="btn" style="padding:5px; font-size:9px;" onclick="sys.renderDiary('medium')">ORTA</button>
+                    <button class="btn" style="padding:5px; font-size:9px;" onclick="sys.renderDiary('hard')">ZOR</button>
+                </div>
+                <div id="diary-box" class="list-container"></div>`;
+            sys.showModal(html); sys.renderDiary('easy');
+        },
+
+        renderDiary: (mode) => {
+            const box = document.getElementById('diary-box'); box.innerHTML = "";
+            POOLS[mode].forEach(w => {
+                let ok = sys.learned.includes(w.tr);
+                box.innerHTML += `<div class="word-tab ${ok?'word-learned':''}">${w.tr} ${ok?'✓':''}</div>`;
             });
         },
 
         showSuggest: () => {
             let html = `<div class="box-title">ÖNERİLER</div>
-                <textarea id="s-msg" placeholder="Mesajını yaz..."></textarea>
+                <textarea id="s-msg" placeholder="Önerini yaz..."></textarea>
                 <button class="btn" style="background:var(--gold); color:black" onclick="sys.sendS()">GÖNDER</button>
                 <div id="s-list" class="list-container"></div>`;
             sys.showModal(html);
@@ -157,7 +260,7 @@
                 snap.forEach(s => { 
                     const d = s.val();
                     list.innerHTML = `<div class="list-item" style="flex-direction:column; align-items:start">
-                        <b class="rank-${d.rank}">${d.user} [${d.rank}]:</b><span>${d.msg}</span>
+                        <b class="rank-${d.rank}">${d.user}:</b><span>${d.msg}</span>
                     </div>` + list.innerHTML;
                 });
             });
@@ -170,25 +273,6 @@
                 const r = sys.getRank(snap.val().record, sys.name);
                 db.ref('suggestions').push({ user: sys.name.toUpperCase(), msg: m, rank: r });
                 document.getElementById('s-msg').value = "";
-            });
-        },
-
-        showDiary: () => {
-            let html = `<div class="box-title">GÜNLÜK</div>
-                <div style="display:flex; gap:5px; margin-bottom:10px;">
-                    <button class="btn" style="padding:5px; font-size:10px;" onclick="sys.renderDiary('easy')">KOLAY</button>
-                    <button class="btn" style="padding:5px; font-size:10px;" onclick="sys.renderDiary('medium')">ORTA</button>
-                    <button class="btn" style="padding:5px; font-size:10px;" onclick="sys.renderDiary('hard')">ZOR</button>
-                </div>
-                <div id="diary-box" class="list-container"></div>`;
-            sys.showModal(html); sys.renderDiary('easy');
-        },
-
-        renderDiary: (mode) => {
-            const box = document.getElementById('diary-box'); box.innerHTML = "";
-            POOLS[mode].forEach(w => {
-                let ok = sys.learned.includes(w.tr);
-                box.innerHTML += `<div class="word-tab ${ok?'word-learned':''}">${w.tr} ${ok?'✓':''}</div>`;
             });
         },
 
@@ -207,9 +291,7 @@
             sys.updateHearts(); sys.startTimer(); sys.next();
         },
 
-        updateHearts: () => {
-            document.getElementById('hearts').innerText = "❤️".repeat(sys.lives) + "🖤".repeat(3 - sys.lives);
-        },
+        updateHearts: () => { document.getElementById('hearts').innerText = "❤️".repeat(sys.lives) + "🖤".repeat(3 - sys.lives); },
 
         startTimer: () => {
             let clock = setInterval(() => {
@@ -227,7 +309,8 @@
         },
 
         checkAnswer: () => {
-            if(document.getElementById('answer').value.toLowerCase().trim() === sys.cur.en) {
+            const ans = document.getElementById('answer').value.toLowerCase().trim();
+            if(ans === sys.cur.en) {
                 sys.score += 50; sys.timer += 2;
                 if(!sys.learned.includes(sys.cur.tr)) {
                     sys.learned.push(sys.cur.tr);
@@ -242,18 +325,36 @@
 
         finish: () => {
             sys.active = false;
-            db.ref('users/'+sys.name).once('value', snap => {
-                const old = snap.val().record || 0;
-                if(sys.score > old) db.ref('users/'+sys.name).update({record: sys.score});
-                sys.showModal(`<div class="box-title">OYUN BİTTİ</div><h1>${sys.score} PUAN</h1>`, () => location.reload());
-            });
-            document.getElementById('scr-game').style.display='none';
-            document.getElementById('scr-login').style.display='contents';
+            if(!sys.isVs) {
+                db.ref('users/'+sys.name).once('value', snap => {
+                    const old = snap.val().record || 0;
+                    if(sys.score > old) db.ref('users/'+sys.name).update({record: sys.score});
+                    sys.showModal(`<div class="box-title">BİTTİ</div><h1>${sys.score} PUAN</h1>`, () => location.reload());
+                });
+            } else {
+                if(sys.vsTurn === 1) {
+                    sys.p1Score = sys.score; sys.vsTurn = 2;
+                    sys.showModal(`SIRA ${sys.p2Name.toUpperCase()} OYUNCUSUNDA!`, () => sys.login(sys.currentMode));
+                } else {
+                    sys.p2Score = sys.score;
+                    const win = sys.p1Score > sys.p2Score ? sys.p1Name : sys.p2Name;
+                    sys.showModal(`<div class="box-title">VS BİTTİ</div><p>${sys.p1Name}: ${sys.p1Score}</p><p>${sys.p2Name}: ${sys.p2Score}</p><h2>KAZANAN: ${win.toUpperCase()}</h2>`, () => location.reload());
+                }
+            }
         },
 
         showModal: (h, cb) => {
             document.getElementById('modal-content').innerHTML = h;
             document.getElementById('modal-container').style.display = 'flex';
+            document.getElementById('modal-actions').style.display = 'none';
+            if(cb) document.querySelector('#modal-container .btn').onclick = () => { document.getElementById('modal-container').style.display='none'; cb(); };
+        },
+
+        showConfirm: (msg, yes, no) => {
+            sys.showModal(msg);
+            document.getElementById('modal-actions').style.display = 'flex';
+            document.getElementById('modal-yes').onclick = () => { yes(); };
+            document.getElementById('modal-no').onclick = () => { no(); document.getElementById('modal-container').style.display='none'; };
         },
 
         showLeaderboard: () => {
