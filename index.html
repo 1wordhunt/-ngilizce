@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WORD HUNT FINAL | DEV BURAK</title>
+    <title>WORD HUNT ULTIMATE | DEV BURAK</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;800&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
@@ -15,15 +15,14 @@
         body { font-family: 'Poppins', sans-serif; background: var(--dark); color: #fff; height: 100vh; overflow: hidden; }
         
         .big-card { background: #151515; border-radius: 25px; width: 95%; max-width: 450px; padding: 25px; text-align: center; border: 1px solid #222; margin: auto; position: relative; z-index: 5; }
-        .btn { width: 100%; padding: 15px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; margin-bottom: 10px; color: #fff; transition: 0.2s; display: flex; align-items: center; justify-content: center; font-size: 14px; text-transform: uppercase; }
+        .btn { width: 100%; padding: 15px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; margin-bottom: 10px; color: #fff; transition: 0.2s; display: flex; align-items: center; justify-content: center; font-size: 13px; text-transform: uppercase; }
         .btn:active { transform: scale(0.95); }
         
         .overlay { position: fixed; inset: 0; z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.98); backdrop-filter: blur(15px); padding: 20px; }
         .visible { display: flex !important; }
 
-        /* Ghost & Red Effect */
-        .ghost-overlay { position: fixed; inset: 0; background: rgba(255, 0, 0, 0.3); z-index: 9998; display: none; pointer-events: none; }
-        .js-overlay { position: fixed; inset: 0; background: url('https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJ6MHg5ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9iZCZjdD1n/3o7TKv9QWGb7y3jPj2/giphy.gif') center/cover; z-index: 9999; display: none; opacity: 0.7; pointer-events: none; mix-blend-mode: overlay; }
+        .ghost-overlay { position: fixed; inset: 0; background: rgba(255, 0, 0, 0.4); z-index: 9998; display: none; pointer-events: none; }
+        .js-overlay { position: fixed; inset: 0; background: url('https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJ6MHg5ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9iZCZjdD1n/3o7TKv9QWGb7y3jPj2/giphy.gif') center/cover; z-index: 9999; display: none; opacity: 0.7; pointer-events: none; mix-blend-mode: color-dodge; }
         
         .shake { animation: shake 0.2s ease-in-out infinite; }
         @keyframes shake { 0% { transform: translate(0,0); } 25% { transform: translate(-10px,5px); } 50% { transform: translate(10px,-5px); } 100% { transform: translate(0,0); } }
@@ -48,7 +47,7 @@
         <h1 style="font-family:'Orbitron'; color: var(--green); margin-bottom: 20px;">WORD HUNT</h1>
         <input type="text" id="username" placeholder="KULLANICI ADI" style="width:100%; padding:15px; margin-bottom:10px; background:#111; border:1px solid #333; color:#fff; border-radius:12px; text-align:center;">
         <input type="password" id="password" placeholder="ŞİFRE" style="width:100%; padding:15px; margin-bottom:20px; background:#111; border:1px solid #333; color:#fff; border-radius:12px; text-align:center;">
-        <button class="btn" style="background: var(--green); color: #000;" onclick="sys.auth()">GİRİŞ</button>
+        <button class="btn" style="background: var(--green); color: #000;" onclick="sys.auth()">GİRİŞ YAP</button>
     </div>
 </div>
 
@@ -70,9 +69,9 @@
             <div id="hearts" style="color:var(--red); font-size:20px;">❤️❤️❤️</div>
             <div id="timer" style="font-family:'Orbitron'; color:var(--gold); font-size:20px;">30</div>
         </div>
-        <div id="word-target" style="font-size: 38px; margin: 20px 0; font-weight: 900;">...</div>
-        <input type="text" id="game-inp" placeholder="Cevap..." style="width:100%; padding:18px; background:#000; border:2px solid #333; color:#fff; border-radius:15px; text-align:center; font-size:22px; margin-bottom:15px;">
-        <button class="btn" style="background: var(--green); color:#000;" onclick="sys.check()">ONAYLA</button>
+        <div id="word-target" style="font-size: 38px; margin: 15px 0; font-weight: 900;">...</div>
+        <input type="text" id="game-inp" placeholder="Cevap..." autocomplete="off" style="width:100%; padding:18px; background:#000; border:2px solid #333; color:#fff; border-radius:15px; text-align:center; font-size:22px; margin-bottom:15px;">
+        <button class="btn" style="background: var(--green); color:#000;" onclick="sys.check()">GÖNDER</button>
         <div style="font-weight:800; color:var(--gold);">SKOR: <b id="score-val">0</b></div>
     </div>
 </div>
@@ -184,11 +183,18 @@
         },
 
         showRank: () => {
-            db.ref('users').orderByChild('record').once('value', s => {
-                const list = document.getElementById('rank-list'); list.innerHTML = "";
-                let arr = []; s.forEach(u => arr.push({n: u.key, r: u.val().record}));
-                arr.sort((a,b) => b.r - a.r).slice(0,10).forEach((u, i) => {
-                    list.innerHTML += `<div class="list-item"><span>#${i+1} ${u.n.toUpperCase()}</span><b>${u.r}</b></div>`;
+            const list = document.getElementById('rank-list');
+            list.innerHTML = "Yükleniyor...";
+            db.ref('users').once('value', s => {
+                list.innerHTML = "";
+                let arr = [];
+                s.forEach(u => {
+                    arr.push({n: u.key, r: u.val().record || 0});
+                });
+                // En yüksek skoru başa al
+                arr.sort((a,b) => b.r - a.r);
+                arr.slice(0,10).forEach((u, i) => {
+                    list.innerHTML += `<div class="list-item"><span>#${i+1} ${u.n.toUpperCase()}</span><b>${u.r} PT</b></div>`;
                 });
             });
         },
@@ -221,7 +227,16 @@
 
         openModal: (id) => { sys.closeAll(); document.getElementById(id).classList.add('visible'); if(id==='modal-rank') sys.showRank(); if(id==='modal-diary') sys.loadDiary('easy'); },
         closeAll: () => { document.querySelectorAll('.overlay').forEach(o => o.classList.remove('visible')); document.getElementById('main-menu').classList.add('visible'); },
-        end: (m) => { clearInterval(sys.timer); if(sys.pts > sys.r) { sys.r = sys.pts; db.ref('users/'+sys.u).update({record: sys.pts}); } alert(m + "\nSKOR: " + sys.pts); sys.upUI(); sys.closeAll(); }
+        end: (m) => { 
+            clearInterval(sys.timer); 
+            if(sys.pts > sys.r) { 
+                sys.r = sys.pts; 
+                db.ref('users/'+sys.u).update({record: sys.pts}); 
+            } 
+            alert(m + "\nSKOR: " + sys.pts); 
+            sys.upUI(); 
+            sys.closeAll(); 
+        }
     };
 
     document.getElementById('game-inp').addEventListener('keypress', e => { if(e.key==='Enter') sys.check(); });
