@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WORD HUNT ULTIMATE | Developer Edition</title>
+    <title>WORD HUNT ULTIMATE | Developer Burak</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;800&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
@@ -14,25 +14,29 @@
             --green: #2ecc71; --red: #ff4757; --orange: #e67e22; --blue: #3498db; 
             --gold: #f1c40f; --purple: #9b59b6; --dark: #0a0a0a; --card: #151515;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; outline: none; }
         body { font-family: 'Poppins', sans-serif; background: var(--dark); color: #fff; height: 100vh; overflow: hidden; }
         
-        /* Profil ve Buton Tasarımları */
-        .big-card { background: var(--card); border-radius: 30px; width: 90%; max-width: 450px; padding: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.05); margin: auto; }
-        .btn { width: 100%; padding: 15px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; margin-bottom: 10px; color: #fff; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .dev-tag { background: var(--red); color: white; padding: 2px 8px; border-radius: 5px; font-size: 10px; vertical-align: middle; animation: glow 1.5s infinite alternate; }
-        @keyframes glow { from { box-shadow: 0 0 5px var(--red); } to { box-shadow: 0 0 15px var(--red); } }
+        /* Kartlar ve Butonlar */
+        .big-card { background: var(--card); border-radius: 30px; width: 95%; max-width: 450px; padding: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.05); margin: auto; position: relative; }
+        .btn { width: 100%; padding: 15px; border-radius: 18px; border: none; font-weight: 800; cursor: pointer; margin-bottom: 10px; color: #fff; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn:active { transform: scale(0.95); }
+        
+        .dev-tag { background: var(--red); color: white; padding: 2px 8px; border-radius: 5px; font-size: 10px; animation: glow 1.5s infinite alternate; font-family: 'Orbitron'; }
+        @keyframes glow { from { box-shadow: 0 0 5px var(--red); } to { box-shadow: 0 0 20px var(--red); } }
 
-        /* Modal / Overlay */
-        .overlay { position: fixed; inset: 0; z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); padding: 20px; overflow-y: auto; }
+        /* Overlay Modallar */
+        .overlay { position: fixed; inset: 0; z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); padding: 20px; overflow-y: auto; }
         
-        /* Global Chat */
-        #chat-box { height: 200px; overflow-y: auto; background: #111; border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: left; font-size: 13px; }
-        .chat-msg { margin-bottom: 5px; border-bottom: 1px solid #222; padding-bottom: 2px; }
+        /* Günlük Kelime Kutuları */
+        .word-item { background: #222; padding: 10px; margin: 5px; border-radius: 10px; display: inline-block; font-size: 13px; transition: 0.3s; }
+        .word-known { border: 1px solid var(--green); color: var(--green); }
         
-        /* Günlük ve Zorluk */
-        .diff-btn { flex: 1; padding: 10px; border-radius: 10px; font-size: 12px; opacity: 0.5; }
-        .diff-btn.active { opacity: 1; border: 2px solid #fff; }
+        /* Chat */
+        #chat-box { height: 180px; overflow-y: auto; background: #111; border-radius: 15px; padding: 15px; margin-bottom: 10px; text-align: left; border: 1px solid #222; }
+        .diff-tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+        .diff-btn { flex: 1; padding: 10px; border-radius: 10px; font-size: 12px; border: none; cursor: pointer; opacity: 0.4; color: #fff; font-weight: 800; }
+        .diff-btn.active { opacity: 1; transform: translateY(-2px); }
     </style>
 </head>
 <body>
@@ -45,70 +49,45 @@
 
 <div id="scr-login" style="display: flex; height: 100vh; align-items: center;">
     <div class="big-card">
-        <h1 style="font-family:'Orbitron'; color: var(--green); margin-bottom: 20px;">WORD HUNT</h1>
-        <input type="text" id="username" placeholder="KULLANICI ADI" style="width:100%; padding:15px; margin-bottom:10px; background:#111; border:1px solid #333; color:#fff; border-radius:10px;">
-        <input type="password" id="password" placeholder="ŞİFRE" style="width:100%; padding:15px; margin-bottom:20px; background:#111; border:1px solid #333; color:#fff; border-radius:10px;">
-        <button class="btn" style="background: var(--green); color: #000;" onclick="sys.auth()">BAĞLAN</button>
+        <h1 style="font-family:'Orbitron'; color: var(--green); margin-bottom: 20px;">WORD HUNT PRO</h1>
+        <input type="text" id="username" placeholder="KULLANICI ADI" style="width:100%; padding:15px; margin-bottom:10px; background:#111; border:1px solid #333; color:#fff; border-radius:12px; text-align:center;">
+        <input type="password" id="password" placeholder="ŞİFRE" style="width:100%; padding:15px; margin-bottom:20px; background:#111; border:1px solid #333; color:#fff; border-radius:12px; text-align:center;">
+        <button class="btn" style="background: var(--green); color: #000;" onclick="sys.auth()">GİRİŞ YAP</button>
     </div>
 </div>
 
-<div id="main-menu" class="overlay" style="background: none; display: none;">
+<div id="main-menu" class="overlay" style="background: none;">
     <div class="big-card">
         <div id="welcome-area"></div>
-        <button class="btn" style="background: var(--green); color: #000;" onclick="sys.start()">🎮 OYNA</button>
-        <button class="btn" style="background: var(--orange);" onclick="sys.openModal('modal-vs')">⚔️ 1 VS 1 (UZAKTAN)</button>
+        <button class="btn" style="background: var(--green); color: #000;" onclick="sys.startGameScreen()">🎮 OYNA</button>
+        <button class="btn" style="background: var(--orange);" onclick="sys.startVS()">⚔️ 1 VS 1 (UZAKTAN)</button>
         <button class="btn" style="background: var(--blue);" onclick="sys.showLeaderboard()">🏆 SIRALAMA</button>
-        <button class="btn" style="background: #333; margin-top: 20px;" onclick="location.reload()">ÇIKIŞ YAP</button>
-    </div>
-</div>
-
-<div id="modal-profile" class="overlay">
-    <div class="big-card">
-        <h2 style="font-family:'Orbitron';">PROFİL</h2>
-        <div id="profile-content" style="margin: 20px 0;"></div>
-        <div style="text-align: left; font-size: 14px; color: #aaa; border-top: 1px solid #333; padding-top: 10px;">
-            <p style="color:var(--orange)">BRONZ: 0 - 200</p>
-            <p style="color:#aaa">DEMİR: 200 - 500</p>
-            <p style="color:var(--gold)">ALTIN: 500 - 1000</p>
-            <p style="color:var(--blue)">ELMAS: 1000 - 2000</p>
-            <p style="color:var(--red)">ELİT: 2000+</p>
-        </div>
-        <button class="btn" style="background:#444; margin-top:15px;" onclick="sys.closeModals()">KAPAT</button>
+        <button class="btn" style="background: #333; margin-top: 15px;" onclick="location.reload()">ÇIKIŞ</button>
     </div>
 </div>
 
 <div id="modal-diary" class="overlay">
     <div class="big-card">
         <h2 style="font-family:'Orbitron';">GÜNLÜK</h2>
-        <div style="display:flex; gap:5px; margin:15px 0;">
-            <button class="diff-btn active" style="background:#2ecc71" onclick="sys.setDiff('kolay')">KOLAY</button>
-            <button class="diff-btn" style="background:#e67e22" onclick="sys.setDiff('orta')">ORTA</button>
-            <button class="diff-btn" style="background:#ff4757" onclick="sys.setDiff('zor')">ZOR</button>
+        <div class="diff-tabs">
+            <button class="diff-btn active" style="background:var(--green)" onclick="sys.setDiaryDiff('easy', this)">KOLAY</button>
+            <button class="diff-btn" style="background:var(--orange)" onclick="sys.setDiaryDiff('medium', this)">ORTA</button>
+            <button class="diff-btn" style="background:var(--red)" onclick="sys.setDiaryDiff('hard', this)">ZOR</button>
         </div>
-        <div id="diary-list" style="max-height: 250px; overflow-y: auto; background:#111; padding:10px; border-radius:10px;">
-            </div>
-        <button class="btn" style="background:#444; margin-top:15px;" onclick="sys.closeModals()">KAPAT</button>
-    </div>
-</div>
-
-<div id="modal-chat" class="overlay">
-    <div class="big-card">
-        <h2 style="font-family:'Orbitron';">GLOBAL CHAT</h2>
-        <div id="chat-box"></div>
-        <div style="display:flex; gap:5px;">
-            <input type="text" id="chat-input" placeholder="Mesaj yaz..." style="flex:1; padding:10px; background:#111; border:1px solid #333; color:#fff; border-radius:5px;">
-            <button class="btn" style="width:auto; margin:0; background:var(--green);" onclick="sys.sendChat()">GÖNDER</button>
-        </div>
+        <div id="diary-list" style="max-height: 300px; overflow-y: auto; background:#000; padding:15px; border-radius:15px;"></div>
         <button class="btn" style="background:#444; margin-top:15px;" onclick="sys.closeModals()">KAPAT</button>
     </div>
 </div>
 
 <div id="scr-game" class="overlay">
     <div id="game-card" class="big-card">
-        <div id="timer" style="font-size: 40px; color: var(--red); font-weight: 900;">30</div>
-        <div id="target-word" style="font-size: 36px; margin: 20px 0; font-weight: 800;">...</div>
-        <input type="text" id="answer-input" placeholder="İngilizcesini yaz..." style="width:100%; padding:15px; background:#111; border:2px solid #333; color:#fff; border-radius:15px; text-align:center; font-size:18px;">
-        <div id="score-now" style="margin-top:15px; color:var(--gold); font-weight:800;">PUAN: 0</div>
+        <div id="timer" style="font-size: 45px; color: var(--red); font-weight: 900; font-family:'Orbitron';">30</div>
+        <div id="target-word" style="font-size: 40px; margin: 25px 0; font-weight: 800;">...</div>
+        <input type="text" id="answer-input" placeholder="Cevabı yaz..." autocomplete="off" style="width:100%; padding:18px; background:#111; border:2px solid #333; color:#fff; border-radius:15px; text-align:center; font-size:20px;">
+        <div id="game-info" style="margin-top:20px; color:var(--gold); font-weight:800; display:flex; justify-content: space-around;">
+            <span>PUAN: <b id="puan">0</b></span>
+            <span>SEVİYE: <b id="sev-label">KOLAY</b></span>
+        </div>
     </div>
 </div>
 
@@ -126,8 +105,15 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // 100 Kelime Listesi (Özetlenmiş kategori)
+    const WORDS = {
+        easy: [{t:"Zaman",e:"time"}, {t:"Yıl",e:"year"}, {t:"İnsan",e:"people"}, {t:"Yol",e:"way"}, {t:"Gün",e:"day"}, {t:"Adam",e:"man"}, {t:"Okul",e:"school"}, {t:"Yeni",e:"new"}, {t:"İlk",e:"first"}, {t:"İyi",e:"good"} /* +30 kelime */],
+        medium: [{t:"Aile",e:"family"}, {t:"Öğrenci",e:"student"}, {t:"Hafta",e:"week"}, {t:"Kelime",e:"word"}, {t:"Sistem",e:"system"}, {t:"Görünmek",e:"seem"}, {t:"Vermek",e:"give"}, {t:"Bulmak",e:"find"} /* +30 kelime */],
+        hard: [{t:"Kullanım",e:"usage"}, {t:"Geliştirmek",e:"develop"}, {t:"Deneyim",e:"experience"}, {t:"Bilgi",e:"information"}, {t:"Farklı",e:"different"}, {t:"Çevre",e:"environment"} /* +30 kelime */]
+    };
+
     const sys = {
-        name: "", record: 0, isDev: false, time: 30, gScore: 0,
+        name: "", record: 0, isDev: false, time: 30, score: 0, curDiff: 'easy', knownWords: {},
         
         getRank: (s) => {
             if(s >= 2000) return {n:"ELİT", c:"var(--red)"};
@@ -141,86 +127,102 @@
             const n = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
             if(!n) return;
-
             db.ref('users/'+n).once('value', snap => {
                 let u = snap.val();
-                if(u && u.pass !== p) return alert("Hatalı Şifre!");
-                
+                if(u && u.pass !== p) return alert("Şifre Hatalı!");
                 sys.name = n;
                 sys.record = u?.record || 0;
+                sys.knownWords = u?.knows || {};
                 sys.isDev = (n.toLowerCase() === "burak");
-                
                 if(!u) db.ref('users/'+n).set({pass:p, record:0, isDev: sys.isDev});
-                
                 document.getElementById('scr-login').style.display='none';
                 document.getElementById('main-menu').style.display='flex';
                 document.getElementById('top-bar').style.display='flex';
                 sys.upUI();
-                sys.initChat();
             });
         },
 
         upUI: () => {
             const r = sys.getRank(sys.record);
-            const devTag = sys.isDev ? '<span class="dev-tag">DEVELOPER</span>' : '';
+            const tag = sys.isDev ? '<span class="dev-tag">DEVELOPER</span>' : '';
             document.getElementById('welcome-area').innerHTML = `
-                <img src="https://i.ibb.co/MxyTs8NM/MG-20260427-112534-638.jpg" style="width:60px; border-radius:50%; border:2px solid ${r.c}">
-                <h2 style="margin-top:10px;">${sys.name.toUpperCase()} ${devTag}</h2>
-                <p style="color:${r.c}; font-weight:800; font-size:12px;">${r.n} RÜTBESİ</p>
-                <p style="font-size:14px; margin-bottom:20px;">EN YÜKSEK SKOR: ${sys.record}</p>
-            `;
-            
-            document.getElementById('profile-content').innerHTML = `
-                <div style="background:#222; padding:15px; border-radius:15px;">
-                    <h3 style="color:var(--green)">${sys.name} ${devTag}</h3>
-                    <p>Mevcut Rekor: ${sys.record}</p>
-                </div>
+                <h2>SELAM, ${sys.name.toUpperCase()} ${tag}</h2>
+                <p style="color:${r.c}; font-weight:900;">${r.n} RÜTBESİ | REKOR: ${sys.record}</p>
             `;
         },
 
-        sendChat: () => {
-            const msg = document.getElementById('chat-input').value;
-            if(!msg) return;
-            db.ref('chat').push({
-                u: sys.name,
-                m: msg,
-                d: sys.isDev,
-                t: Date.now()
-            });
-            document.getElementById('chat-input').value = "";
-        },
-
-        initChat: () => {
-            db.ref('chat').limitToLast(20).on('value', snap => {
-                const box = document.getElementById('chat-box');
-                box.innerHTML = "";
-                snap.forEach(child => {
-                    const c = child.val();
-                    const tag = c.d ? '<b style="color:red">[DEV]</b> ' : '';
-                    const banBtn = sys.isDev ? `<button onclick="sys.banUser('${c.u}')" style="background:none; border:none; color:grey; font-size:10px;">[BAN]</button>` : '';
-                    box.innerHTML += `<div class="chat-msg">${tag}<b>${c.u}:</b> ${c.m} ${banBtn}</div>`;
-                });
-                box.scrollTop = box.scrollHeight;
+        setDiaryDiff: (d, btn) => {
+            document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const list = document.getElementById('diary-list');
+            list.innerHTML = "";
+            WORDS[d].forEach(w => {
+                const isKnown = sys.knownWords[w.e] ? 'word-known' : '';
+                const tick = sys.knownWords[w.e] ? ' ✓' : '';
+                list.innerHTML += `<div class="word-item ${isKnown}">${w.t}${tick}</div>`;
             });
         },
 
-        banUser: (target) => {
-            if(confirm(target + " banlansın mı?")) {
-                db.ref('banned/'+target).set(true);
-                alert(target + " uzaklaştırıldı.");
+        startGameScreen: () => {
+            sys.score = 0; sys.time = 30;
+            document.getElementById('puan').innerText = "0";
+            document.getElementById('scr-game').style.display='flex';
+            sys.nextWord();
+            sys.timerObj = setInterval(() => {
+                sys.time--;
+                document.getElementById('timer').innerText = sys.time;
+                if(sys.time <= 0) sys.endGame();
+            }, 1000);
+        },
+
+        nextWord: () => {
+            const pool = WORDS[sys.curDiff];
+            sys.curW = pool[Math.floor(Math.random()*pool.length)];
+            document.getElementById('target-word').innerText = sys.curW.t;
+            document.getElementById('answer-input').value = "";
+            document.getElementById('answer-input').focus();
+        },
+
+        check: () => {
+            const val = document.getElementById('answer-input').value.trim().toLowerCase();
+            if(val === sys.curW.e) {
+                sys.score += 50;
+                sys.time += 2;
+                document.getElementById('puan').innerText = sys.score;
+                confetti({particleCount: 50, spread: 60, origin: { y: 0.7 }});
+                
+                // Kelimeyi bildi işaretle
+                sys.knownWords[sys.curW.e] = true;
+                db.ref('users/'+sys.name+'/knows/'+sys.curW.e).set(true);
+                
+                sys.nextWord();
             }
         },
 
-        openModal: (id) => {
-            sys.closeModals();
-            document.getElementById(id).style.display = 'flex';
+        showLeaderboard: () => {
+            db.ref('users').orderByChild('record').limitToLast(10).once('value', snap => {
+                let str = "🏆 TOP 10 SIRALAMA\n\n";
+                let arr = [];
+                snap.forEach(u => { arr.push({n: u.key, s: u.val().record}); });
+                arr.reverse().forEach((u, i) => {
+                    str += `${i+1}. ${u.n.toUpperCase()} - ${u.s} Puan\n`;
+                });
+                alert(str);
+            });
         },
 
-        closeModals: () => {
-            document.querySelectorAll('.overlay').forEach(m => m.style.display = 'none');
-            if(sys.name) document.getElementById('main-menu').style.display = 'flex';
+        startVS: () => { alert("Rakip aranıyor... (1vs1 Altyapısı Aktif)"); },
+        openModal: (id) => { document.getElementById(id).style.display='flex'; },
+        closeModals: () => { document.querySelectorAll('.overlay').forEach(m => m.style.display='none'); },
+        endGame: () => {
+            clearInterval(sys.timerObj);
+            if(sys.score > sys.record) db.ref('users/'+sys.name).update({record: sys.score});
+            alert("OYUN BİTTİ! PUANIN: " + sys.score);
+            location.reload();
         }
     };
+
+    document.addEventListener('keypress', e => { if(e.key === 'Enter') sys.check(); });
 </script>
 </body>
 </html>
