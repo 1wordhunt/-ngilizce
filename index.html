@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WORD HUNT ULTIMATE | DEV BURAK</title>
+    <title>WORD HUNT PRO | DEV BURAK</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;800&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
@@ -21,18 +21,20 @@
         .overlay { position: fixed; inset: 0; z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.98); backdrop-filter: blur(15px); padding: 20px; }
         .visible { display: flex !important; }
 
-        /* Listeleme Kutuları */
         .list-box { background: #000; border-radius: 15px; padding: 15px; max-height: 280px; overflow-y: auto; width: 100%; border: 1px solid #222; margin-top: 10px; }
         .list-item { padding: 12px; border-bottom: 1px solid #111; display: flex; justify-content: space-between; font-size: 13px; align-items: center; }
         
-        /* Chat Mesajları */
-        #chat-flow { height: 200px; overflow-y: auto; background: #050505; border-radius: 10px; padding: 10px; text-align: left; margin-bottom: 10px; font-size: 12px; border: 1px solid #222; }
+        #chat-flow { height: 180px; overflow-y: auto; background: #050505; border-radius: 10px; padding: 10px; text-align: left; margin-bottom: 10px; font-size: 12px; border: 1px solid #222; }
         .dev-tag { background: var(--red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-family: 'Orbitron'; margin-left: 5px; }
 
-        /* Jumpscare */
+        /* Can ve Süre Paneli */
+        .game-stats-top { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; }
+        .hearts { color: var(--red); font-size: 24px; letter-spacing: 5px; }
+        .timer-box { font-family: 'Orbitron'; color: var(--gold); font-size: 24px; }
+
         .js-overlay { position: fixed; inset: 0; background: url('https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJ6MHg5ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9iZCZjdD1n/3o7TKv9QWGb7y3jPj2/giphy.gif') center/cover; z-index: 9999; display: none; opacity: 0.6; pointer-events: none; }
         .shake { animation: shake 0.2s ease-in-out infinite; }
-        @keyframes shake { 0% { transform: translate(0,0); } 25% { transform: translate(-8px,4px); } 50% { transform: translate(8px,-4px); } 75% { transform: translate(-8px,-4px); } 100% { transform: translate(0,0); } }
+        @keyframes shake { 0% { transform: translate(0,0); } 25% { transform: translate(-8px,4px); } 50% { transform: translate(8px,-4px); } 100% { transform: translate(0,0); } }
 
         .diary-tabs { display: flex; gap: 5px; margin-bottom: 10px; }
         .tab-btn { flex: 1; padding: 10px; border-radius: 10px; border: none; color: #fff; font-weight: 800; font-size: 10px; opacity: 0.4; cursor: pointer; }
@@ -64,13 +66,16 @@
     </div>
 </div>
 
-<div id="modal-diff" class="overlay">
-    <div class="big-card">
-        <h2 style="font-family:'Orbitron'; margin-bottom: 20px;">ZORLUK SEÇ</h2>
-        <button class="btn" style="background: var(--green);" onclick="sys.start('easy')">KOLAY</button>
-        <button class="btn" style="background: var(--orange);" onclick="sys.start('medium')">ORTA</button>
-        <button class="btn" style="background: var(--red);" onclick="sys.start('hard')">ZOR</button>
-        <button class="btn" style="background: #333;" onclick="sys.closeAll()">GERİ</button>
+<div id="scr-game" class="overlay">
+    <div id="game-card" class="big-card">
+        <div class="game-stats-top">
+            <div id="hearts-box" class="hearts">❤️❤️❤️</div>
+            <div id="timer" class="timer-box">30</div>
+        </div>
+        <div id="word-target" style="font-size: 40px; margin: 10px 0; font-weight: 900;">...</div>
+        <input type="text" id="game-inp" placeholder="İngilizcesini yaz..." style="width:100%; padding:18px; background:#000; border:2px solid #333; color:#fff; border-radius:15px; text-align:center; font-size:22px; margin-bottom:15px;">
+        <button class="btn" style="background: var(--green); color:#000;" onclick="sys.check()">KONTROL ET</button>
+        <div style="font-weight:800; color:var(--gold);">SKOR: <b id="score-val">0</b></div>
     </div>
 </div>
 
@@ -87,43 +92,10 @@
     </div>
 </div>
 
-<div id="modal-profile" class="overlay">
-    <div class="big-card">
-        <h2 style="font-family:'Orbitron'; margin-bottom: 15px;">👤 PROFİLİM</h2>
-        <div id="profile-box" class="list-box" style="text-align: left;"></div>
-        <button class="btn" style="background: #333; margin-top: 15px;" onclick="sys.closeAll()">KAPAT</button>
-    </div>
-</div>
-
-<div id="modal-rank" class="overlay">
-    <div class="big-card">
-        <h2 style="font-family:'Orbitron'; margin-bottom: 15px;">🏆 TOP 10</h2>
-        <div id="rank-list" class="list-box"></div>
-        <button class="btn" style="background: #333; margin-top: 15px;" onclick="sys.closeAll()">KAPAT</button>
-    </div>
-</div>
-
-<div id="modal-chat" class="overlay">
-    <div class="big-card">
-        <h2 style="font-family:'Orbitron'; margin-bottom: 10px;">GLOBAL CHAT</h2>
-        <div id="chat-flow"></div>
-        <input type="text" id="chat-inp" placeholder="Mesaj yaz..." style="width:100%; padding:12px; background:#000; border:1px solid #333; color:#fff; border-radius:10px; margin-bottom:10px;">
-        <button class="btn" style="background: var(--blue);" onclick="sys.sendChat()">GÖNDER</button>
-        <button class="btn" style="background: #333;" onclick="sys.closeAll()">KAPAT</button>
-    </div>
-</div>
-
-<div id="scr-game" class="overlay">
-    <div id="game-card" class="big-card">
-        <div id="timer" style="font-size: 50px; color: var(--red); font-family: 'Orbitron';">30</div>
-        <div id="word-target" style="font-size: 40px; margin: 20px 0; font-weight: 900;">...</div>
-        <input type="text" id="game-inp" placeholder="İngilizcesini yaz..." style="width:100%; padding:18px; background:#000; border:2px solid #333; color:#fff; border-radius:15px; text-align:center; font-size:22px; margin-bottom:15px;">
-        <button class="btn" style="background: var(--green); color:#000;" onclick="sys.check()">KONTROL ET</button>
-        <div style="display:flex; justify-content: space-around; font-weight:800; color:var(--gold);">
-            <span>SKOR: <b id="score-val">0</b></span>
-        </div>
-    </div>
-</div>
+<div id="modal-diff" class="overlay"><div class="big-card"><h2 style="font-family:'Orbitron'; margin-bottom: 20px;">ZORLUK SEÇ</h2><button class="btn" style="background: var(--green);" onclick="sys.start('easy')">KOLAY</button><button class="btn" style="background: var(--orange);" onclick="sys.start('medium')">ORTA</button><button class="btn" style="background: var(--red);" onclick="sys.start('hard')">ZOR</button><button class="btn" style="background: #333;" onclick="sys.closeAll()">GERİ</button></div></div>
+<div id="modal-profile" class="overlay"><div class="big-card"><h2 style="font-family:'Orbitron'; margin-bottom: 15px;">👤 PROFİLİM</h2><div id="profile-box" class="list-box" style="text-align: left;"></div><button class="btn" style="background: #333; margin-top: 15px;" onclick="sys.closeAll()">KAPAT</button></div></div>
+<div id="modal-rank" class="overlay"><div class="big-card"><h2 style="font-family:'Orbitron'; margin-bottom: 15px;">🏆 TOP 10</h2><div id="rank-list" class="list-box"></div><button class="btn" style="background: #333; margin-top: 15px;" onclick="sys.closeAll()">KAPAT</button></div></div>
+<div id="modal-chat" class="overlay"><div class="big-card"><h2 style="font-family:'Orbitron'; margin-bottom: 10px;">GLOBAL CHAT</h2><div id="chat-flow"></div><input type="text" id="chat-inp" placeholder="Mesaj yaz..." style="width:100%; padding:12px; background:#000; border:1px solid #333; color:#fff; border-radius:10px; margin-bottom:10px;"><button class="btn" style="background: var(--blue);" onclick="sys.sendChat()">GÖNDER</button><button class="btn" style="background: #333;" onclick="sys.closeAll()">KAPAT</button></div></div>
 
 <script>
     const firebaseConfig = {
@@ -139,14 +111,24 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // 100 KELİME DAĞILIMI
+    const ALL_WORDS = [
+        "time","year","people","way","day","man","thing","woman","life","child","world","school","state","family","student","group","country","problem","hand","part","place","case","week","company","system","word","work","use","make","take",
+        "give","come","look","want","find","tell","ask","try","need","feel","become","leave","call","keep","start","seem","help","talk","turn","begin","show","good","new","first","last","long","great","little","own","other","old","right","big","high","different",
+        "small","large","next","early","young","important","few","public","bad","same","able","very","often","really","quickly","slowly","well","always","sometimes","usually","together","already","almost","especially","probably","finally","easily","recently","immediately","nearly","currently","clearly","simply","exactly","strongly"
+    ];
+    
+    // Kelimeleri Türkçe karşılıklarıyla eşleştirip zorluğa göre bölme
+    const TR = {"time":"Zaman","year":"Yıl","people":"İnsan","way":"Yol","day":"Gün","man":"Adam","thing":"Şey","woman":"Kadın","life":"Hayat","child":"Çocuk","world":"Dünya","school":"Okul","state":"Devlet","family":"Aile","student":"Öğrenci","group":"Grup","country":"Ülke","problem":"Sorun","hand":"El","part":"Parça","place":"Yer","case":"Durum","week":"Hafta","company":"Şirket","system":"Sistem","word":"Kelime","work":"İş","use":"Kullanım","make":"Yapmak","take":"Almak","give":"Vermek","come":"Gelmek","look":"Bakmak","want":"İstemek","find":"Bulmak","tell":"Söylemek","ask":"Sormak","try":"Denemek","need":"İhtiyaç","feel":"Hissetmek","become":"Olmak","leave":"Ayrılmak","call":"Aramak","keep":"Tutmak","start":"Başlamak","seem":"Görünmek","help":"Yardım","talk":"Konuşmak","turn":"Dönmek","begin":"Başlamak","show":"Göstermek","good":"İyi","new":"Yeni","first":"İlk","last":"Son","long":"Uzun","great":"Harika","little":"Küçük","own":"Kendi","other":"Diğer","old":"Eski","right":"Doğru","big":"Büyük","high":"Yüksek","different":"Farklı","small":"Küçük","large":"Geniş","next":"Sıradaki","early":"Erken","young":"Genç","important":"Önemli","few":"Az","public":"Halk","bad":"Kötü","same":"Aynı","able":"Yetenekli","very":"Çok","often":"Sık sık","really":"Gerçekten","quickly":"Hızlıca","slowly":"Yavaşça","well":"İyi","always":"Her zaman","sometimes":"Bazen","usually":"Genellikle","together":"Birlikte","already":"Zaten","almost":"Neredeyse","especially":"Özellikle","probably":"Muhtemelen","finally":"Sonunda","easily":"Kolayca","recently":"Son zamanlarda","immediately":"Hemen","nearly":"Yaklaşık","currently":"Şu anda","clearly":"Açıkça","simply":"Basitçe","exactly":"Tam olarak","strongly":"Güçlüce"};
+
     const WORDS = {
-        easy: [{t:"Zaman",e:"time"},{t:"Yıl",e:"year"},{t:"İnsan",e:"people"},{t:"Yol",e:"way"},{t:"Gün",e:"day"},{t:"Adam",e:"man"},{t:"Şey",e:"thing"},{t:"Kadın",e:"woman"},{t:"Hayat",e:"life"},{t:"Çocuk",e:"child"},{t:"Dünya",e:"world"},{t:"Okul",e:"school"}],
-        medium: [{t:"Vermek",e:"give"},{t:"Gelmek",e:"come"},{t:"Bakmak",e:"look"},{t:"İstemek",e:"want"},{t:"Bulmak",e:"find"},{t:"Söylemek",e:"tell"},{t:"Sormak",e:"ask"},{t:"Denemek",e:"try"}],
-        hard: [{t:"Özellikle",e:"especially"},{t:"Muhtemelen",e:"probably"},{t:"Sonunda",e:"finally"},{t:"Kolayca",e:"easily"},{t:"Tam olarak",e:"exactly"}]
+        easy: ALL_WORDS.slice(0,35).map(e => ({e, t: TR[e]})),
+        medium: ALL_WORDS.slice(35,70).map(e => ({e, t: TR[e]})),
+        hard: ALL_WORDS.slice(70,100).map(e => ({e, t: TR[e]}))
     };
 
     const sys = {
-        u:"", r:0, knows:{}, time:30, pts:0, curW:null, curD:'easy', timer:null, isDev:false,
+        u:"", r:0, knows:{}, time:30, pts:0, hearts:3, curW:null, curD:'easy', timer:null, isDev:false,
 
         auth: () => {
             const n = document.getElementById('username').value.trim();
@@ -167,16 +149,8 @@
         upUI: () => {
             const tag = sys.isDev ? '<span class="dev-tag">DEVELOPER</span>' : '';
             const rank = sys.getRank(sys.r);
-            document.getElementById('menu-header').innerHTML = `
-                <h2>${sys.u.toUpperCase()} ${tag}</h2>
-                <p style="color:${rank.c}; font-weight:800; font-size:11px; font-family:'Orbitron';">${rank.n}</p>
-            `;
-            document.getElementById('profile-box').innerHTML = `
-                <p>KULLANICI: <b>${sys.u.toUpperCase()}</b></p>
-                <p>REKOR: <b>${sys.r} PT</b></p>
-                <p>RÜTBE: <b style="color:${rank.c}">${rank.n}</b></p>
-                <p>ROL: <b>${sys.isDev ? 'DEVELOPER' : 'OYUNCU'}</b></p>
-            `;
+            document.getElementById('menu-header').innerHTML = `<h2>${sys.u.toUpperCase()} ${tag}</h2><p style="color:${rank.c}; font-weight:800; font-size:11px;">${rank.n}</p>`;
+            document.getElementById('profile-box').innerHTML = `<p>KULLANICI: <b>${sys.u.toUpperCase()}</b></p><p>REKOR: <b>${sys.r} PT</b></p><p>RÜTBE: <b style="color:${rank.c}">${rank.n}</b></p><p>ROL: <b>${sys.isDev ? 'DEVELOPER' : 'OYUNCU'}</b></p>`;
         },
 
         getRank: (s) => {
@@ -198,13 +172,14 @@
         },
 
         start: (d) => {
-            sys.closeAll(); sys.pts = 0; sys.time = 30; sys.curD = d;
+            sys.closeAll(); sys.pts = 0; sys.time = 30; sys.hearts = 3; sys.curD = d;
             document.getElementById('score-val').innerText = "0";
+            document.getElementById('hearts-box').innerText = "❤️❤️❤️";
             document.getElementById('scr-game').classList.add('visible');
             sys.next();
             sys.timer = setInterval(() => {
                 sys.time--; document.getElementById('timer').innerText = sys.time;
-                if(sys.time <= 0) sys.end();
+                if(sys.time <= 0) sys.end("SÜRE BİTTİ!");
             }, 1000);
         },
 
@@ -220,17 +195,21 @@
             if(v === sys.curW.e) {
                 sys.pts += 50; sys.time += 2;
                 document.getElementById('score-val').innerText = sys.pts;
-                confetti({particleCount: 50, spread: 60, origin: { y: 0.8 }});
+                confetti({particleCount: 40, spread: 50, origin: { y: 0.8 }});
                 sys.knows[sys.curW.e] = true;
                 db.ref('users/'+sys.u+'/knows/'+sys.curW.e).set(true);
                 sys.next();
             } else {
+                sys.hearts--;
+                document.getElementById('hearts-box').innerText = "❤️".repeat(sys.hearts);
                 document.getElementById('js-screen').style.display='block';
                 document.getElementById('game-card').classList.add('shake');
                 setTimeout(() => {
                     document.getElementById('js-screen').style.display='none';
                     document.getElementById('game-card').classList.remove('shake');
                 }, 400);
+                if(sys.hearts <= 0) setTimeout(() => sys.end("CANLARIN BİTTİ!"), 500);
+                else sys.next();
             }
         },
 
@@ -252,34 +231,27 @@
         },
 
         listenChat: () => {
-            db.ref('chat').limitToLast(20).on('value', snap => {
+            db.ref('chat').limitToLast(15).on('value', snap => {
                 const flow = document.getElementById('chat-flow'); flow.innerHTML = "";
                 snap.forEach(c => {
                     const v = c.val();
-                    const tag = v.d ? '<span class="dev-tag">DEV</span>' : '';
-                    flow.innerHTML += `<div style="margin-bottom:5px;"><b>${v.u}${tag}:</b> ${v.m}</div>`;
+                    flow.innerHTML += `<div style="margin-bottom:5px;"><b>${v.u}${v.d?'<span class="dev-tag">DEV</span>':''}:</b> ${v.m}</div>`;
                 });
                 flow.scrollTop = flow.scrollHeight;
             });
         },
 
-        openModal: (id) => { 
-            sys.closeAll(); 
-            document.getElementById(id).classList.add('visible'); 
-            if(id === 'modal-diary') sys.loadDiary('easy');
-            if(id === 'modal-rank') sys.showRank();
-        },
-
-        closeAll: () => { 
-            document.querySelectorAll('.overlay').forEach(o => o.classList.remove('visible')); 
-            document.getElementById('main-menu').classList.add('visible'); 
-        },
-
-        end: () => {
+        openModal: (id) => { sys.closeAll(); document.getElementById(id).classList.add('visible'); if(id === 'modal-diary') sys.loadDiary('easy'); if(id === 'modal-rank') sys.showRank(); },
+        closeAll: () => { document.querySelectorAll('.overlay').forEach(o => o.classList.remove('visible')); document.getElementById('main-menu').classList.add('visible'); },
+        end: (msg) => {
             clearInterval(sys.timer);
-            if(sys.pts > sys.r) db.ref('users/'+sys.u).update({record: sys.pts});
-            alert("SÜRE DOLDU! SKOR: " + sys.pts);
-            location.reload();
+            if(sys.pts > sys.r) {
+                sys.r = sys.pts;
+                db.ref('users/'+sys.u).update({record: sys.pts});
+            }
+            alert(msg + "\nSKORUN: " + sys.pts);
+            sys.upUI();
+            sys.closeAll();
         }
     };
 
