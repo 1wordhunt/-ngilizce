@@ -14,6 +14,9 @@
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; outline: none; }
         body { font-family: 'Poppins', sans-serif; background: var(--dark); color: #fff; height: 100vh; overflow: hidden; }
         
+        /* LOGO STİLİ */
+        .game-logo { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--green); margin-bottom: 15px; object-fit: cover; box-shadow: 0 0 20px rgba(46, 204, 113, 0.3); }
+
         .big-card { background: #151515; border-radius: 25px; width: 95%; max-width: 450px; padding: 25px; text-align: center; border: 1px solid #222; margin: auto; position: relative; z-index: 5; }
         .btn { width: 100%; padding: 15px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; margin-bottom: 10px; color: #fff; transition: 0.2s; display: flex; align-items: center; justify-content: center; font-size: 13px; text-transform: uppercase; }
         .btn:active { transform: scale(0.95); }
@@ -44,6 +47,7 @@
 
 <div id="scr-login" style="display: flex; height: 100vh; align-items: center;">
     <div class="big-card">
+        <img src="https://i.ibb.co/2HLfyhf/MG-20260426-WA0015.jpg" class="game-logo" alt="Logo">
         <h1 style="font-family:'Orbitron'; color: var(--green); margin-bottom: 20px;">WORD HUNT</h1>
         <input type="text" id="username" placeholder="KULLANICI ADI" style="width:100%; padding:15px; margin-bottom:10px; background:#111; border:1px solid #333; color:#fff; border-radius:12px; text-align:center;">
         <input type="password" id="password" placeholder="ŞİFRE" style="width:100%; padding:15px; margin-bottom:20px; background:#111; border:1px solid #333; color:#fff; border-radius:12px; text-align:center;">
@@ -53,6 +57,7 @@
 
 <div id="main-menu" class="overlay" style="background:none;">
     <div class="big-card">
+        <img src="https://i.ibb.co/2HLfyhf/MG-20260426-WA0015.jpg" class="game-logo" style="width:80px; height:80px;" alt="Logo">
         <div id="menu-header" style="margin-bottom: 20px;"></div>
         <button class="btn" style="background: var(--red);" onclick="sys.openModal('modal-diff')">🎮 OYNA</button>
         <button class="btn" style="background: var(--blue);" onclick="sys.openModal('modal-diary')">📖 GÜNLÜK</button>
@@ -191,7 +196,6 @@
                 s.forEach(u => {
                     arr.push({n: u.key, r: u.val().record || 0});
                 });
-                // En yüksek skoru başa al
                 arr.sort((a,b) => b.r - a.r);
                 arr.slice(0,10).forEach((u, i) => {
                     list.innerHTML += `<div class="list-item"><span>#${i+1} ${u.n.toUpperCase()}</span><b>${u.r} PT</b></div>`;
